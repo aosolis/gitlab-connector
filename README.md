@@ -27,26 +27,41 @@ Authentication is **OAuth 2.0** (authorization code flow) against a GitLab appli
 
 ## Triggers
 
-| Trigger | Method | Path |
-| --- | --- | --- |
-| When an issue is created or updated | POST (subscribe) | `/projects/{id}/hooks` |
+All triggers are GitLab **webhook** triggers. Each is defined on its own unique (synthetic) path so OpenAPI's unique `method + path` rule is satisfied, and the `routerequesttoendpoint` policy rewrites every one to the real create-hook endpoint `POST /projects/{id}/hooks`.
 
-The **When an issue is created or updated** trigger is a GitLab webhook trigger:
+| Trigger | Synthetic path | Event flag | Payload schema |
+| --- | --- | --- | --- |
+| When code is pushed | `/projects/{id}/push_hooks` | `push_events` | `PushEvent` |
+| When a tag is pushed | `/projects/{id}/tag_push_hooks` | `tag_push_events` | `TagPushEvent` |
+| When an issue is created or updated | `/projects/{id}/issue_hooks` | `issues_events` | `IssueEvent` |
+| When a merge request is created or updated | `/projects/{id}/merge_request_hooks` | `merge_requests_events` | `MergeRequestEvent` |
+| When a comment is added | `/projects/{id}/note_hooks` | `note_events` | `NoteEvent` |
+| When a pipeline status changes | `/projects/{id}/pipeline_hooks` | `pipeline_events` | `PipelineEvent` |
+| When a job status changes | `/projects/{id}/job_hooks` | `job_events` | `JobEvent` |
+| When a wiki page changes | `/projects/{id}/wiki_page_hooks` | `wiki_page_events` | `WikiPageEvent` |
+| When a deployment status changes | `/projects/{id}/deployment_hooks` | `deployment_events` | `DeploymentEvent` |
+| When a release is created or updated | `/projects/{id}/release_hooks` | `releases_events` | `ReleaseEvent` |
+| When a milestone is created or updated | `/projects/{id}/milestone_hooks` | `milestone_events` | `MilestoneEvent` |
+| When a feature flag changes | `/projects/{id}/feature_flag_hooks` | `feature_flag_events` | `FeatureFlagEvent` |
+| When a project access token is expiring | `/projects/{id}/access_token_hooks` | `resource_access_token_events` | `AccessTokenEvent` |
 
-- On flow save, it registers a GitLab project hook (`issues_events`) whose callback URL is injected by Power Platform (`x-ms-notification-url`).
-- GitLab then POSTs each issue event (open, update, close, reopen) to the flow; downstream steps get typed outputs from the `IssueEvent` schema.
-- **Auto-unsubscribe:** GitLab's create-hook response has no `Location` header, so `script.csx` reads the returned hook `id` and sets an absolute `Location` header. When the flow is turned off, Power Platform issues a DELETE to that URL, removing the hook.
-- Requires the **Maintainer** role (or higher) on the project to manage webhooks. `List project hooks` / `Delete project hook` are provided for manual cleanup.
+How the webhook lifecycle works:
 
-The GitLab API base path `/api/v4` is applied via the host template in `apiProperties.json` (the `dynamichosturl` policy replaces the host and drops the swagger `basePath`, so `/api/v4` is included in the template). The **project `{id}`** parameter accepts either a numeric ID or a URL-encoded path such as `my-group/my-project`.
+- **Subscribe:** on flow save, the trigger registers a project hook scoped to its single event flag (`push_events` is forced to `false` on all non-push triggers so each hook fires on only its event type). The callback URL is a body property named **`notificationUrl`** (marked `x-ms-notification-url`); `script.csx` renames it to GitLab's expected `url` field before sending.
+- **Notify:** GitLab POSTs each event to the callback; downstream steps get typed outputs from the payload schema.
+- **Auto-unsubscribe:** GitLab's create-hook response has no `Location` header, so `script.csx` builds one from the response `project_id` + `id`. When the flow is turned off, Power Platform DELETEs that URL, removing the hook. (`script.csx` is bound to the trigger operations via `scriptOperations` in `apiProperties.json`.)
+- **Confidential/internal items:** the issue and comment triggers expose an **Include confidential issues** / **Include internal comments** toggle (default off) that adds `confidential_issues_events` / `confidential_note_events` to the subscription.
+- **Permissions:** managing webhooks requires the **Maintainer** role (or higher) on the project. `List project hooks` / `Delete project hook` actions are provided for manual cleanup.
+
+The GitLab API base path `/api/v4` is applied via the host template in `apiProperties.json` (the `dynamichosturl` policy replaces the host and drops the swagger `basePath`, so `/api/v4` is included in the template; the trigger `newPath` is therefore relative: `/projects/{id}/hooks`). The **project `{id}`** parameter accepts either a numeric ID or a URL-encoded path such as `my-group/my-project`.
 
 ## Files
 
 | File | Purpose |
 | --- | --- |
 | `apiDefinition.swagger.json` | OpenAPI 2.0 (Swagger) definition of the actions and triggers. |
-| `apiProperties.json` | Connection parameters, OAuth 2.0 settings, and the dynamic-host policy. |
-| `script.csx` | C# custom code that sets the `Location` header on the webhook subscribe response so triggers auto-unsubscribe. |
+| `apiProperties.json` | Connection parameters, OAuth 2.0 settings, the dynamic-host + webhook-routing policies, and `scriptOperations`. |
+| `script.csx` | C# custom code: remaps `notificationUrl`→`url` on subscribe, and sets the `Location` header so triggers auto-unsubscribe. |
 | `settings.json` | `paconn` CLI settings. |
 | `icon.png` | Connector icon (brand color `#FC6D26`). |
 

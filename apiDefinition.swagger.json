@@ -514,52 +514,6 @@
       }
     },
     "/projects/{id}/hooks": {
-      "post": {
-        "operationId": "OnIssueEvent",
-        "summary": "When an issue is created or updated",
-        "description": "Triggers when an issue event occurs in the project (create, update, close, or reopen). Registers a GitLab project webhook scoped to issue events; Power Platform removes the webhook automatically when the flow is turned off.",
-        "x-ms-trigger": "single",
-        "x-ms-trigger-hint": "To see it work, create or edit an issue in the project.",
-        "parameters": [
-          {
-            "$ref": "#/parameters/ProjectId"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/IssueHookSubscription"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Webhook registered.",
-            "schema": {
-              "$ref": "#/definitions/ProjectHook"
-            },
-            "headers": {
-              "Location": {
-                "type": "string",
-                "description": "URL of the created webhook, used to remove it on unsubscribe."
-              }
-            }
-          },
-          "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        },
-        "x-ms-notification-content": {
-          "description": "GitLab issue event payload.",
-          "schema": {
-            "$ref": "#/definitions/IssueEvent"
-          }
-        }
-      },
       "get": {
         "operationId": "ListProjectHooks",
         "summary": "List project hooks",
@@ -612,6 +566,1013 @@
             "schema": {
               "$ref": "#/definitions/Error"
             }
+          }
+        }
+      }
+    },
+    "/projects/{id}/push_hooks": {
+      "post": {
+        "operationId": "OnPushEvent",
+        "summary": "When code is pushed",
+        "description": "When code is pushed. Registers a GitLab project webhook; Power Platform removes it automatically when the flow is turned off.",
+        "x-ms-trigger": "single",
+        "x-ms-trigger-hint": "To see it work, push a commit to a branch in the project.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "notificationUrl"
+              ],
+              "properties": {
+                "notificationUrl": {
+                  "type": "string",
+                  "description": "Callback URL that GitLab posts events to. Populated automatically by Power Platform.",
+                  "x-ms-notification-url": true,
+                  "x-ms-visibility": "internal"
+                },
+                "push_events": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Subscribe to this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "enable_ssl_verification": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Verify the SSL certificate of the callback URL.",
+                  "x-ms-visibility": "internal"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Webhook registered.",
+            "schema": {
+              "$ref": "#/definitions/ProjectHook"
+            },
+            "headers": {
+              "Location": {
+                "type": "string",
+                "description": "URL of the created webhook, used to remove it on unsubscribe."
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "x-ms-notification-content": {
+          "description": "When code is pushed payload.",
+          "schema": {
+            "$ref": "#/definitions/PushEvent"
+          }
+        }
+      }
+    },
+    "/projects/{id}/tag_push_hooks": {
+      "post": {
+        "operationId": "OnTagPushEvent",
+        "summary": "When a tag is pushed",
+        "description": "When a tag is pushed. Registers a GitLab project webhook; Power Platform removes it automatically when the flow is turned off.",
+        "x-ms-trigger": "single",
+        "x-ms-trigger-hint": "To see it work, push a tag to the project.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "notificationUrl"
+              ],
+              "properties": {
+                "notificationUrl": {
+                  "type": "string",
+                  "description": "Callback URL that GitLab posts events to. Populated automatically by Power Platform.",
+                  "x-ms-notification-url": true,
+                  "x-ms-visibility": "internal"
+                },
+                "tag_push_events": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Subscribe to this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "push_events": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Disabled so the hook only fires on this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "enable_ssl_verification": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Verify the SSL certificate of the callback URL.",
+                  "x-ms-visibility": "internal"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Webhook registered.",
+            "schema": {
+              "$ref": "#/definitions/ProjectHook"
+            },
+            "headers": {
+              "Location": {
+                "type": "string",
+                "description": "URL of the created webhook, used to remove it on unsubscribe."
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "x-ms-notification-content": {
+          "description": "When a tag is pushed payload.",
+          "schema": {
+            "$ref": "#/definitions/TagPushEvent"
+          }
+        }
+      }
+    },
+    "/projects/{id}/issue_hooks": {
+      "post": {
+        "operationId": "OnIssueEvent",
+        "summary": "When an issue is created or updated",
+        "description": "When an issue is created or updated. Registers a GitLab project webhook; Power Platform removes it automatically when the flow is turned off.",
+        "x-ms-trigger": "single",
+        "x-ms-trigger-hint": "To see it work, create or edit an issue in the project.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "notificationUrl"
+              ],
+              "properties": {
+                "notificationUrl": {
+                  "type": "string",
+                  "description": "Callback URL that GitLab posts events to. Populated automatically by Power Platform.",
+                  "x-ms-notification-url": true,
+                  "x-ms-visibility": "internal"
+                },
+                "issues_events": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Subscribe to this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "push_events": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Disabled so the hook only fires on this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "enable_ssl_verification": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Verify the SSL certificate of the callback URL.",
+                  "x-ms-visibility": "internal"
+                },
+                "confidential_issues_events": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Include confidential issues.",
+                  "x-ms-summary": "Include confidential issues"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Webhook registered.",
+            "schema": {
+              "$ref": "#/definitions/ProjectHook"
+            },
+            "headers": {
+              "Location": {
+                "type": "string",
+                "description": "URL of the created webhook, used to remove it on unsubscribe."
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "x-ms-notification-content": {
+          "description": "When an issue is created or updated payload.",
+          "schema": {
+            "$ref": "#/definitions/IssueEvent"
+          }
+        }
+      }
+    },
+    "/projects/{id}/merge_request_hooks": {
+      "post": {
+        "operationId": "OnMergeRequestEvent",
+        "summary": "When a merge request is created or updated",
+        "description": "When a merge request is created or updated. Registers a GitLab project webhook; Power Platform removes it automatically when the flow is turned off.",
+        "x-ms-trigger": "single",
+        "x-ms-trigger-hint": "To see it work, create or edit a merge request in the project.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "notificationUrl"
+              ],
+              "properties": {
+                "notificationUrl": {
+                  "type": "string",
+                  "description": "Callback URL that GitLab posts events to. Populated automatically by Power Platform.",
+                  "x-ms-notification-url": true,
+                  "x-ms-visibility": "internal"
+                },
+                "merge_requests_events": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Subscribe to this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "push_events": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Disabled so the hook only fires on this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "enable_ssl_verification": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Verify the SSL certificate of the callback URL.",
+                  "x-ms-visibility": "internal"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Webhook registered.",
+            "schema": {
+              "$ref": "#/definitions/ProjectHook"
+            },
+            "headers": {
+              "Location": {
+                "type": "string",
+                "description": "URL of the created webhook, used to remove it on unsubscribe."
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "x-ms-notification-content": {
+          "description": "When a merge request is created or updated payload.",
+          "schema": {
+            "$ref": "#/definitions/MergeRequestEvent"
+          }
+        }
+      }
+    },
+    "/projects/{id}/note_hooks": {
+      "post": {
+        "operationId": "OnNoteEvent",
+        "summary": "When a comment is added",
+        "description": "When a comment is added. Registers a GitLab project webhook; Power Platform removes it automatically when the flow is turned off.",
+        "x-ms-trigger": "single",
+        "x-ms-trigger-hint": "To see it work, add a comment to an issue or merge request.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "notificationUrl"
+              ],
+              "properties": {
+                "notificationUrl": {
+                  "type": "string",
+                  "description": "Callback URL that GitLab posts events to. Populated automatically by Power Platform.",
+                  "x-ms-notification-url": true,
+                  "x-ms-visibility": "internal"
+                },
+                "note_events": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Subscribe to this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "push_events": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Disabled so the hook only fires on this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "enable_ssl_verification": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Verify the SSL certificate of the callback URL.",
+                  "x-ms-visibility": "internal"
+                },
+                "confidential_note_events": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Include internal comments.",
+                  "x-ms-summary": "Include internal comments"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Webhook registered.",
+            "schema": {
+              "$ref": "#/definitions/ProjectHook"
+            },
+            "headers": {
+              "Location": {
+                "type": "string",
+                "description": "URL of the created webhook, used to remove it on unsubscribe."
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "x-ms-notification-content": {
+          "description": "When a comment is added payload.",
+          "schema": {
+            "$ref": "#/definitions/NoteEvent"
+          }
+        }
+      }
+    },
+    "/projects/{id}/pipeline_hooks": {
+      "post": {
+        "operationId": "OnPipelineEvent",
+        "summary": "When a pipeline status changes",
+        "description": "When a pipeline status changes. Registers a GitLab project webhook; Power Platform removes it automatically when the flow is turned off.",
+        "x-ms-trigger": "single",
+        "x-ms-trigger-hint": "To see it work, run a pipeline in the project.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "notificationUrl"
+              ],
+              "properties": {
+                "notificationUrl": {
+                  "type": "string",
+                  "description": "Callback URL that GitLab posts events to. Populated automatically by Power Platform.",
+                  "x-ms-notification-url": true,
+                  "x-ms-visibility": "internal"
+                },
+                "pipeline_events": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Subscribe to this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "push_events": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Disabled so the hook only fires on this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "enable_ssl_verification": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Verify the SSL certificate of the callback URL.",
+                  "x-ms-visibility": "internal"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Webhook registered.",
+            "schema": {
+              "$ref": "#/definitions/ProjectHook"
+            },
+            "headers": {
+              "Location": {
+                "type": "string",
+                "description": "URL of the created webhook, used to remove it on unsubscribe."
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "x-ms-notification-content": {
+          "description": "When a pipeline status changes payload.",
+          "schema": {
+            "$ref": "#/definitions/PipelineEvent"
+          }
+        }
+      }
+    },
+    "/projects/{id}/job_hooks": {
+      "post": {
+        "operationId": "OnJobEvent",
+        "summary": "When a job status changes",
+        "description": "When a job status changes. Registers a GitLab project webhook; Power Platform removes it automatically when the flow is turned off.",
+        "x-ms-trigger": "single",
+        "x-ms-trigger-hint": "To see it work, run a CI job in the project.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "notificationUrl"
+              ],
+              "properties": {
+                "notificationUrl": {
+                  "type": "string",
+                  "description": "Callback URL that GitLab posts events to. Populated automatically by Power Platform.",
+                  "x-ms-notification-url": true,
+                  "x-ms-visibility": "internal"
+                },
+                "job_events": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Subscribe to this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "push_events": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Disabled so the hook only fires on this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "enable_ssl_verification": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Verify the SSL certificate of the callback URL.",
+                  "x-ms-visibility": "internal"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Webhook registered.",
+            "schema": {
+              "$ref": "#/definitions/ProjectHook"
+            },
+            "headers": {
+              "Location": {
+                "type": "string",
+                "description": "URL of the created webhook, used to remove it on unsubscribe."
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "x-ms-notification-content": {
+          "description": "When a job status changes payload.",
+          "schema": {
+            "$ref": "#/definitions/JobEvent"
+          }
+        }
+      }
+    },
+    "/projects/{id}/wiki_page_hooks": {
+      "post": {
+        "operationId": "OnWikiPageEvent",
+        "summary": "When a wiki page changes",
+        "description": "When a wiki page changes. Registers a GitLab project webhook; Power Platform removes it automatically when the flow is turned off.",
+        "x-ms-trigger": "single",
+        "x-ms-trigger-hint": "To see it work, create or edit a wiki page in the project.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "notificationUrl"
+              ],
+              "properties": {
+                "notificationUrl": {
+                  "type": "string",
+                  "description": "Callback URL that GitLab posts events to. Populated automatically by Power Platform.",
+                  "x-ms-notification-url": true,
+                  "x-ms-visibility": "internal"
+                },
+                "wiki_page_events": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Subscribe to this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "push_events": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Disabled so the hook only fires on this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "enable_ssl_verification": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Verify the SSL certificate of the callback URL.",
+                  "x-ms-visibility": "internal"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Webhook registered.",
+            "schema": {
+              "$ref": "#/definitions/ProjectHook"
+            },
+            "headers": {
+              "Location": {
+                "type": "string",
+                "description": "URL of the created webhook, used to remove it on unsubscribe."
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "x-ms-notification-content": {
+          "description": "When a wiki page changes payload.",
+          "schema": {
+            "$ref": "#/definitions/WikiPageEvent"
+          }
+        }
+      }
+    },
+    "/projects/{id}/deployment_hooks": {
+      "post": {
+        "operationId": "OnDeploymentEvent",
+        "summary": "When a deployment status changes",
+        "description": "When a deployment status changes. Registers a GitLab project webhook; Power Platform removes it automatically when the flow is turned off.",
+        "x-ms-trigger": "single",
+        "x-ms-trigger-hint": "To see it work, run a deployment in the project.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "notificationUrl"
+              ],
+              "properties": {
+                "notificationUrl": {
+                  "type": "string",
+                  "description": "Callback URL that GitLab posts events to. Populated automatically by Power Platform.",
+                  "x-ms-notification-url": true,
+                  "x-ms-visibility": "internal"
+                },
+                "deployment_events": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Subscribe to this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "push_events": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Disabled so the hook only fires on this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "enable_ssl_verification": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Verify the SSL certificate of the callback URL.",
+                  "x-ms-visibility": "internal"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Webhook registered.",
+            "schema": {
+              "$ref": "#/definitions/ProjectHook"
+            },
+            "headers": {
+              "Location": {
+                "type": "string",
+                "description": "URL of the created webhook, used to remove it on unsubscribe."
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "x-ms-notification-content": {
+          "description": "When a deployment status changes payload.",
+          "schema": {
+            "$ref": "#/definitions/DeploymentEvent"
+          }
+        }
+      }
+    },
+    "/projects/{id}/release_hooks": {
+      "post": {
+        "operationId": "OnReleaseEvent",
+        "summary": "When a release is created or updated",
+        "description": "When a release is created or updated. Registers a GitLab project webhook; Power Platform removes it automatically when the flow is turned off.",
+        "x-ms-trigger": "single",
+        "x-ms-trigger-hint": "To see it work, create a release in the project.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "notificationUrl"
+              ],
+              "properties": {
+                "notificationUrl": {
+                  "type": "string",
+                  "description": "Callback URL that GitLab posts events to. Populated automatically by Power Platform.",
+                  "x-ms-notification-url": true,
+                  "x-ms-visibility": "internal"
+                },
+                "releases_events": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Subscribe to this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "push_events": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Disabled so the hook only fires on this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "enable_ssl_verification": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Verify the SSL certificate of the callback URL.",
+                  "x-ms-visibility": "internal"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Webhook registered.",
+            "schema": {
+              "$ref": "#/definitions/ProjectHook"
+            },
+            "headers": {
+              "Location": {
+                "type": "string",
+                "description": "URL of the created webhook, used to remove it on unsubscribe."
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "x-ms-notification-content": {
+          "description": "When a release is created or updated payload.",
+          "schema": {
+            "$ref": "#/definitions/ReleaseEvent"
+          }
+        }
+      }
+    },
+    "/projects/{id}/milestone_hooks": {
+      "post": {
+        "operationId": "OnMilestoneEvent",
+        "summary": "When a milestone is created or updated",
+        "description": "When a milestone is created or updated. Registers a GitLab project webhook; Power Platform removes it automatically when the flow is turned off.",
+        "x-ms-trigger": "single",
+        "x-ms-trigger-hint": "To see it work, create or edit a milestone in the project.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "notificationUrl"
+              ],
+              "properties": {
+                "notificationUrl": {
+                  "type": "string",
+                  "description": "Callback URL that GitLab posts events to. Populated automatically by Power Platform.",
+                  "x-ms-notification-url": true,
+                  "x-ms-visibility": "internal"
+                },
+                "milestone_events": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Subscribe to this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "push_events": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Disabled so the hook only fires on this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "enable_ssl_verification": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Verify the SSL certificate of the callback URL.",
+                  "x-ms-visibility": "internal"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Webhook registered.",
+            "schema": {
+              "$ref": "#/definitions/ProjectHook"
+            },
+            "headers": {
+              "Location": {
+                "type": "string",
+                "description": "URL of the created webhook, used to remove it on unsubscribe."
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "x-ms-notification-content": {
+          "description": "When a milestone is created or updated payload.",
+          "schema": {
+            "$ref": "#/definitions/MilestoneEvent"
+          }
+        }
+      }
+    },
+    "/projects/{id}/feature_flag_hooks": {
+      "post": {
+        "operationId": "OnFeatureFlagEvent",
+        "summary": "When a feature flag changes",
+        "description": "When a feature flag changes. Registers a GitLab project webhook; Power Platform removes it automatically when the flow is turned off.",
+        "x-ms-trigger": "single",
+        "x-ms-trigger-hint": "To see it work, toggle a feature flag in the project.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "notificationUrl"
+              ],
+              "properties": {
+                "notificationUrl": {
+                  "type": "string",
+                  "description": "Callback URL that GitLab posts events to. Populated automatically by Power Platform.",
+                  "x-ms-notification-url": true,
+                  "x-ms-visibility": "internal"
+                },
+                "feature_flag_events": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Subscribe to this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "push_events": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Disabled so the hook only fires on this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "enable_ssl_verification": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Verify the SSL certificate of the callback URL.",
+                  "x-ms-visibility": "internal"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Webhook registered.",
+            "schema": {
+              "$ref": "#/definitions/ProjectHook"
+            },
+            "headers": {
+              "Location": {
+                "type": "string",
+                "description": "URL of the created webhook, used to remove it on unsubscribe."
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "x-ms-notification-content": {
+          "description": "When a feature flag changes payload.",
+          "schema": {
+            "$ref": "#/definitions/FeatureFlagEvent"
+          }
+        }
+      }
+    },
+    "/projects/{id}/access_token_hooks": {
+      "post": {
+        "operationId": "OnAccessTokenEvent",
+        "summary": "When a project access token is expiring",
+        "description": "When a project access token is expiring. Registers a GitLab project webhook; Power Platform removes it automatically when the flow is turned off.",
+        "x-ms-trigger": "single",
+        "x-ms-trigger-hint": "This fires automatically before a project access token expires.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "notificationUrl"
+              ],
+              "properties": {
+                "notificationUrl": {
+                  "type": "string",
+                  "description": "Callback URL that GitLab posts events to. Populated automatically by Power Platform.",
+                  "x-ms-notification-url": true,
+                  "x-ms-visibility": "internal"
+                },
+                "resource_access_token_events": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Subscribe to this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "push_events": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Disabled so the hook only fires on this event type.",
+                  "x-ms-visibility": "internal"
+                },
+                "enable_ssl_verification": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Verify the SSL certificate of the callback URL.",
+                  "x-ms-visibility": "internal"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Webhook registered.",
+            "schema": {
+              "$ref": "#/definitions/ProjectHook"
+            },
+            "headers": {
+              "Location": {
+                "type": "string",
+                "description": "URL of the created webhook, used to remove it on unsubscribe."
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "x-ms-notification-content": {
+          "description": "When a project access token is expiring payload.",
+          "schema": {
+            "$ref": "#/definitions/AccessTokenEvent"
           }
         }
       }
@@ -1112,44 +2073,6 @@
         }
       }
     },
-    "IssueHookSubscription": {
-      "type": "object",
-      "required": [
-        "url"
-      ],
-      "properties": {
-        "url": {
-          "type": "string",
-          "description": "Callback URL that GitLab posts events to. Populated automatically by Power Platform.",
-          "x-ms-notification-url": true,
-          "x-ms-visibility": "internal"
-        },
-        "issues_events": {
-          "type": "boolean",
-          "default": true,
-          "description": "Subscribe to issue events.",
-          "x-ms-visibility": "internal"
-        },
-        "push_events": {
-          "type": "boolean",
-          "default": false,
-          "description": "Subscribe to push events (disabled to limit the hook to issue events).",
-          "x-ms-visibility": "internal"
-        },
-        "enable_ssl_verification": {
-          "type": "boolean",
-          "default": true,
-          "description": "Verify the SSL certificate of the callback URL.",
-          "x-ms-visibility": "internal"
-        },
-        "token": {
-          "type": "string",
-          "description": "Optional secret token; GitLab sends it back in the X-Gitlab-Token header of each event.",
-          "x-ms-summary": "Secret token",
-          "x-ms-visibility": "advanced"
-        }
-      }
-    },
     "ProjectHook": {
       "type": "object",
       "properties": {
@@ -1327,6 +2250,623 @@
           "type": "string",
           "description": "Detailed error description.",
           "x-ms-summary": "Error description"
+        }
+      }
+    },
+    "EventProject": {
+      "type": "object",
+      "description": "The project the event belongs to.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "x-ms-summary": "Project ID"
+        },
+        "name": {
+          "type": "string",
+          "x-ms-summary": "Project name"
+        },
+        "path_with_namespace": {
+          "type": "string",
+          "x-ms-summary": "Path with namespace"
+        },
+        "web_url": {
+          "type": "string",
+          "x-ms-summary": "Project URL"
+        },
+        "default_branch": {
+          "type": "string",
+          "x-ms-summary": "Default branch"
+        }
+      }
+    },
+    "PushEvent": {
+      "type": "object",
+      "properties": {
+        "object_kind": {
+          "type": "string",
+          "x-ms-summary": "Object kind"
+        },
+        "event_name": {
+          "type": "string",
+          "x-ms-summary": "Event name"
+        },
+        "before": {
+          "type": "string",
+          "x-ms-summary": "Before SHA"
+        },
+        "after": {
+          "type": "string",
+          "x-ms-summary": "After SHA"
+        },
+        "ref": {
+          "type": "string",
+          "x-ms-summary": "Ref"
+        },
+        "checkout_sha": {
+          "type": "string",
+          "x-ms-summary": "Checkout SHA"
+        },
+        "user_id": {
+          "type": "integer",
+          "x-ms-summary": "User ID"
+        },
+        "user_name": {
+          "type": "string",
+          "x-ms-summary": "User name"
+        },
+        "user_username": {
+          "type": "string",
+          "x-ms-summary": "User username"
+        },
+        "user_email": {
+          "type": "string",
+          "x-ms-summary": "User email"
+        },
+        "project_id": {
+          "type": "integer",
+          "x-ms-summary": "Project ID"
+        },
+        "project": {
+          "$ref": "#/definitions/EventProject"
+        },
+        "total_commits_count": {
+          "type": "integer",
+          "x-ms-summary": "Total commits count"
+        }
+      }
+    },
+    "TagPushEvent": {
+      "type": "object",
+      "properties": {
+        "object_kind": {
+          "type": "string",
+          "x-ms-summary": "Object kind"
+        },
+        "event_name": {
+          "type": "string",
+          "x-ms-summary": "Event name"
+        },
+        "before": {
+          "type": "string",
+          "x-ms-summary": "Before SHA"
+        },
+        "after": {
+          "type": "string",
+          "x-ms-summary": "After SHA"
+        },
+        "ref": {
+          "type": "string",
+          "x-ms-summary": "Tag ref"
+        },
+        "checkout_sha": {
+          "type": "string",
+          "x-ms-summary": "Checkout SHA"
+        },
+        "user_id": {
+          "type": "integer",
+          "x-ms-summary": "User ID"
+        },
+        "user_name": {
+          "type": "string",
+          "x-ms-summary": "User name"
+        },
+        "project_id": {
+          "type": "integer",
+          "x-ms-summary": "Project ID"
+        },
+        "project": {
+          "$ref": "#/definitions/EventProject"
+        },
+        "total_commits_count": {
+          "type": "integer",
+          "x-ms-summary": "Total commits count"
+        }
+      }
+    },
+    "MergeRequestEvent": {
+      "type": "object",
+      "properties": {
+        "object_kind": {
+          "type": "string",
+          "x-ms-summary": "Object kind"
+        },
+        "event_type": {
+          "type": "string",
+          "x-ms-summary": "Event type"
+        },
+        "user": {
+          "$ref": "#/definitions/UserRef"
+        },
+        "project": {
+          "$ref": "#/definitions/EventProject"
+        },
+        "object_attributes": {
+          "type": "object",
+          "description": "The merge request that triggered the event.",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "x-ms-summary": "ID"
+            },
+            "iid": {
+              "type": "integer",
+              "x-ms-summary": "IID"
+            },
+            "title": {
+              "type": "string",
+              "x-ms-summary": "Title"
+            },
+            "description": {
+              "type": "string",
+              "x-ms-summary": "Description"
+            },
+            "state": {
+              "type": "string",
+              "x-ms-summary": "State"
+            },
+            "action": {
+              "type": "string",
+              "x-ms-summary": "Action"
+            },
+            "source_branch": {
+              "type": "string",
+              "x-ms-summary": "Source branch"
+            },
+            "target_branch": {
+              "type": "string",
+              "x-ms-summary": "Target branch"
+            },
+            "merge_status": {
+              "type": "string",
+              "x-ms-summary": "Merge status"
+            },
+            "url": {
+              "type": "string",
+              "x-ms-summary": "URL"
+            },
+            "created_at": {
+              "type": "string",
+              "x-ms-summary": "Created at"
+            },
+            "updated_at": {
+              "type": "string",
+              "x-ms-summary": "Updated at"
+            }
+          }
+        }
+      }
+    },
+    "NoteEvent": {
+      "type": "object",
+      "properties": {
+        "object_kind": {
+          "type": "string",
+          "x-ms-summary": "Object kind"
+        },
+        "event_type": {
+          "type": "string",
+          "x-ms-summary": "Event type"
+        },
+        "user": {
+          "$ref": "#/definitions/UserRef"
+        },
+        "project": {
+          "$ref": "#/definitions/EventProject"
+        },
+        "object_attributes": {
+          "type": "object",
+          "description": "The comment (note) that triggered the event.",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "x-ms-summary": "ID"
+            },
+            "note": {
+              "type": "string",
+              "x-ms-summary": "Note body"
+            },
+            "noteable_type": {
+              "type": "string",
+              "x-ms-summary": "Noteable type"
+            },
+            "author_id": {
+              "type": "integer",
+              "x-ms-summary": "Author ID"
+            },
+            "url": {
+              "type": "string",
+              "x-ms-summary": "URL"
+            },
+            "created_at": {
+              "type": "string",
+              "x-ms-summary": "Created at"
+            }
+          }
+        }
+      }
+    },
+    "PipelineEvent": {
+      "type": "object",
+      "properties": {
+        "object_kind": {
+          "type": "string",
+          "x-ms-summary": "Object kind"
+        },
+        "user": {
+          "$ref": "#/definitions/UserRef"
+        },
+        "project": {
+          "$ref": "#/definitions/EventProject"
+        },
+        "object_attributes": {
+          "type": "object",
+          "description": "The pipeline that triggered the event.",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "x-ms-summary": "ID"
+            },
+            "iid": {
+              "type": "integer",
+              "x-ms-summary": "IID"
+            },
+            "ref": {
+              "type": "string",
+              "x-ms-summary": "Ref"
+            },
+            "sha": {
+              "type": "string",
+              "x-ms-summary": "SHA"
+            },
+            "source": {
+              "type": "string",
+              "x-ms-summary": "Source"
+            },
+            "status": {
+              "type": "string",
+              "x-ms-summary": "Status"
+            },
+            "created_at": {
+              "type": "string",
+              "x-ms-summary": "Created at"
+            },
+            "finished_at": {
+              "type": "string",
+              "x-ms-summary": "Finished at"
+            },
+            "duration": {
+              "type": "integer",
+              "x-ms-summary": "Duration (seconds)"
+            }
+          }
+        }
+      }
+    },
+    "JobEvent": {
+      "type": "object",
+      "properties": {
+        "object_kind": {
+          "type": "string",
+          "x-ms-summary": "Object kind"
+        },
+        "ref": {
+          "type": "string",
+          "x-ms-summary": "Ref"
+        },
+        "sha": {
+          "type": "string",
+          "x-ms-summary": "SHA"
+        },
+        "build_id": {
+          "type": "integer",
+          "x-ms-summary": "Job ID"
+        },
+        "build_name": {
+          "type": "string",
+          "x-ms-summary": "Job name"
+        },
+        "build_stage": {
+          "type": "string",
+          "x-ms-summary": "Stage"
+        },
+        "build_status": {
+          "type": "string",
+          "x-ms-summary": "Status"
+        },
+        "build_started_at": {
+          "type": "string",
+          "x-ms-summary": "Started at"
+        },
+        "build_finished_at": {
+          "type": "string",
+          "x-ms-summary": "Finished at"
+        },
+        "pipeline_id": {
+          "type": "integer",
+          "x-ms-summary": "Pipeline ID"
+        },
+        "project_id": {
+          "type": "integer",
+          "x-ms-summary": "Project ID"
+        },
+        "user": {
+          "$ref": "#/definitions/UserRef"
+        }
+      }
+    },
+    "WikiPageEvent": {
+      "type": "object",
+      "properties": {
+        "object_kind": {
+          "type": "string",
+          "x-ms-summary": "Object kind"
+        },
+        "user": {
+          "$ref": "#/definitions/UserRef"
+        },
+        "project": {
+          "$ref": "#/definitions/EventProject"
+        },
+        "object_attributes": {
+          "type": "object",
+          "description": "The wiki page that triggered the event.",
+          "properties": {
+            "title": {
+              "type": "string",
+              "x-ms-summary": "Title"
+            },
+            "slug": {
+              "type": "string",
+              "x-ms-summary": "Slug"
+            },
+            "action": {
+              "type": "string",
+              "x-ms-summary": "Action"
+            },
+            "format": {
+              "type": "string",
+              "x-ms-summary": "Format"
+            },
+            "message": {
+              "type": "string",
+              "x-ms-summary": "Message"
+            },
+            "url": {
+              "type": "string",
+              "x-ms-summary": "URL"
+            }
+          }
+        }
+      }
+    },
+    "DeploymentEvent": {
+      "type": "object",
+      "properties": {
+        "object_kind": {
+          "type": "string",
+          "x-ms-summary": "Object kind"
+        },
+        "status": {
+          "type": "string",
+          "x-ms-summary": "Status"
+        },
+        "status_changed_at": {
+          "type": "string",
+          "x-ms-summary": "Status changed at"
+        },
+        "deployment_id": {
+          "type": "integer",
+          "x-ms-summary": "Deployment ID"
+        },
+        "deployable_id": {
+          "type": "integer",
+          "x-ms-summary": "Deployable (job) ID"
+        },
+        "environment": {
+          "type": "string",
+          "x-ms-summary": "Environment"
+        },
+        "ref": {
+          "type": "string",
+          "x-ms-summary": "Ref"
+        },
+        "sha": {
+          "type": "string",
+          "x-ms-summary": "SHA"
+        },
+        "project": {
+          "$ref": "#/definitions/EventProject"
+        },
+        "user": {
+          "$ref": "#/definitions/UserRef"
+        }
+      }
+    },
+    "ReleaseEvent": {
+      "type": "object",
+      "properties": {
+        "object_kind": {
+          "type": "string",
+          "x-ms-summary": "Object kind"
+        },
+        "action": {
+          "type": "string",
+          "x-ms-summary": "Action"
+        },
+        "name": {
+          "type": "string",
+          "x-ms-summary": "Name"
+        },
+        "tag": {
+          "type": "string",
+          "x-ms-summary": "Tag"
+        },
+        "description": {
+          "type": "string",
+          "x-ms-summary": "Description"
+        },
+        "created_at": {
+          "type": "string",
+          "x-ms-summary": "Created at"
+        },
+        "released_at": {
+          "type": "string",
+          "x-ms-summary": "Released at"
+        },
+        "url": {
+          "type": "string",
+          "x-ms-summary": "URL"
+        },
+        "project": {
+          "$ref": "#/definitions/EventProject"
+        }
+      }
+    },
+    "MilestoneEvent": {
+      "type": "object",
+      "properties": {
+        "object_kind": {
+          "type": "string",
+          "x-ms-summary": "Object kind"
+        },
+        "event_type": {
+          "type": "string",
+          "x-ms-summary": "Event type"
+        },
+        "user": {
+          "$ref": "#/definitions/UserRef"
+        },
+        "project": {
+          "$ref": "#/definitions/EventProject"
+        },
+        "object_attributes": {
+          "type": "object",
+          "description": "The milestone that triggered the event.",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "x-ms-summary": "ID"
+            },
+            "iid": {
+              "type": "integer",
+              "x-ms-summary": "IID"
+            },
+            "title": {
+              "type": "string",
+              "x-ms-summary": "Title"
+            },
+            "description": {
+              "type": "string",
+              "x-ms-summary": "Description"
+            },
+            "state": {
+              "type": "string",
+              "x-ms-summary": "State"
+            },
+            "action": {
+              "type": "string",
+              "x-ms-summary": "Action"
+            },
+            "due_date": {
+              "type": "string",
+              "x-ms-summary": "Due date"
+            },
+            "start_date": {
+              "type": "string",
+              "x-ms-summary": "Start date"
+            }
+          }
+        }
+      }
+    },
+    "FeatureFlagEvent": {
+      "type": "object",
+      "properties": {
+        "object_kind": {
+          "type": "string",
+          "x-ms-summary": "Object kind"
+        },
+        "user": {
+          "$ref": "#/definitions/UserRef"
+        },
+        "project": {
+          "$ref": "#/definitions/EventProject"
+        },
+        "object_attributes": {
+          "type": "object",
+          "description": "The feature flag that triggered the event.",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "x-ms-summary": "ID"
+            },
+            "name": {
+              "type": "string",
+              "x-ms-summary": "Name"
+            },
+            "description": {
+              "type": "string",
+              "x-ms-summary": "Description"
+            },
+            "active": {
+              "type": "boolean",
+              "x-ms-summary": "Active"
+            }
+          }
+        }
+      }
+    },
+    "AccessTokenEvent": {
+      "type": "object",
+      "properties": {
+        "object_kind": {
+          "type": "string",
+          "x-ms-summary": "Object kind"
+        },
+        "event_name": {
+          "type": "string",
+          "x-ms-summary": "Event name"
+        },
+        "project": {
+          "$ref": "#/definitions/EventProject"
+        },
+        "object_attributes": {
+          "type": "object",
+          "description": "The project access token that is expiring.",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "x-ms-summary": "ID"
+            },
+            "name": {
+              "type": "string",
+              "x-ms-summary": "Name"
+            },
+            "expires_at": {
+              "type": "string",
+              "x-ms-summary": "Expires at"
+            }
+          }
         }
       }
     }

@@ -45,12 +45,50 @@
     "capabilities": [
       "actions"
     ],
+    "scriptOperations": [
+      "OnPushEvent",
+      "OnTagPushEvent",
+      "OnIssueEvent",
+      "OnMergeRequestEvent",
+      "OnNoteEvent",
+      "OnPipelineEvent",
+      "OnJobEvent",
+      "OnWikiPageEvent",
+      "OnDeploymentEvent",
+      "OnReleaseEvent",
+      "OnMilestoneEvent",
+      "OnFeatureFlagEvent",
+      "OnAccessTokenEvent"
+    ],
     "policyTemplateInstances": [
       {
         "templateId": "dynamichosturl",
         "title": "Route requests to the GitLab host",
         "parameters": {
           "x-ms-apimTemplateParameter.urlTemplate": "https://@connectionParameters('gitlabHost')/api/v4"
+        }
+      },
+      {
+        "templateId": "routerequesttoendpoint",
+        "title": "Route webhook triggers to the create-hook endpoint",
+        "parameters": {
+          "x-ms-apimTemplateParameter.newPath": "/projects/{id}/hooks",
+          "x-ms-apimTemplateParameter.httpMethod": "@Request.OriginalHTTPMethod",
+          "x-ms-apimTemplate-operationName": [
+            "OnPushEvent",
+            "OnTagPushEvent",
+            "OnIssueEvent",
+            "OnMergeRequestEvent",
+            "OnNoteEvent",
+            "OnPipelineEvent",
+            "OnJobEvent",
+            "OnWikiPageEvent",
+            "OnDeploymentEvent",
+            "OnReleaseEvent",
+            "OnMilestoneEvent",
+            "OnFeatureFlagEvent",
+            "OnAccessTokenEvent"
+          ]
         }
       }
     ],
