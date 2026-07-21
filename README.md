@@ -88,7 +88,7 @@ When creating a connection you will be asked for:
 ## Self-managed GitLab notes
 
 - The **GitLab host** connection parameter already lets API calls target any instance.
-- Power Platform requires **static** OAuth authorization/token URLs, so they default to `gitlab.com`. For a self-managed instance, edit the three URLs in `apiProperties.json` (`authorizationUrl`, `tokenUrl`, `refreshUrl`) — or the Security tab after import — to point at your host, e.g. `https://gitlab.mycompany.com/oauth/authorize`. The OAuth host should match the host your tokens are issued from.
+- Power Platform requires **static** OAuth authorization/token URLs, so they default to `gitlab.com`. For a self-managed instance, edit the three URL values in `apiProperties.json` (`authorizationUrlTemplate`, `tokenUrlTemplate`, `refreshUrlTemplate`) — or the Security tab after import — to point at your host, e.g. `https://gitlab.mycompany.com/oauth/authorize`. The OAuth host should match the host your tokens are issued from.
 
 ## References
 

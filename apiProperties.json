@@ -17,13 +17,13 @@
             "IsOnbehalfofLoginSupported": false
           },
           "customParameters": {
-            "authorizationUrl": {
+            "authorizationUrlTemplate": {
               "value": "https://gitlab.com/oauth/authorize"
             },
-            "tokenUrl": {
+            "tokenUrlTemplate": {
               "value": "https://gitlab.com/oauth/token"
             },
-            "refreshUrl": {
+            "refreshUrlTemplate": {
               "value": "https://gitlab.com/oauth/token"
             }
           }
