@@ -125,6 +125,7 @@ When creating a connection you will be asked for:
 
 ## References
 
+- [Implementation notes & gotchas](docs/IMPLEMENTATION_NOTES.md) — hard-won details on OAuth, the dynamic-host and webhook-routing policies, `script.csx`, auto-unsubscribe, and certification rules.
 - [GitLab REST API](https://docs.gitlab.com/ee/api/)
 - [GitLab OAuth 2.0 provider](https://docs.gitlab.com/ee/integration/oauth_provider.html)
 - [Custom connectors overview](https://learn.microsoft.com/connectors/custom-connectors/)
