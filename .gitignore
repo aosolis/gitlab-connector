@@ -1,0 +1,17 @@
+# Local paconn settings that may contain a filled-in connectorId / environment
+settings.local.json
+
+# paconn / Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node (if tooling is added later)
+node_modules/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

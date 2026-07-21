@@ -1,0 +1,1048 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "GitLab",
+    "description": "Connect to GitLab (SaaS gitlab.com or a self-managed instance) to manage projects, issues, merge requests, pipelines, and comments.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "GitLab Connector",
+      "url": "https://docs.gitlab.com/ee/api/"
+    }
+  },
+  "host": "gitlab.com",
+  "basePath": "/api/v4",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/user": {
+      "get": {
+        "operationId": "GetCurrentUser",
+        "summary": "Get current user",
+        "description": "Gets the profile of the authenticated user.",
+        "responses": {
+          "200": {
+            "description": "The authenticated user.",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/projects": {
+      "get": {
+        "operationId": "ListProjects",
+        "summary": "List projects",
+        "description": "Lists projects that the authenticated user can access.",
+        "parameters": [
+          {
+            "name": "membership",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "default": true,
+            "description": "Limit to projects the current user is a member of.",
+            "x-ms-summary": "Member projects only"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Return projects matching the search term.",
+            "x-ms-summary": "Search"
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "id",
+              "name",
+              "path",
+              "created_at",
+              "updated_at",
+              "last_activity_at"
+            ],
+            "default": "last_activity_at",
+            "description": "Field to order results by.",
+            "x-ms-summary": "Order by"
+          },
+          {
+            "$ref": "#/parameters/PerPage"
+          },
+          {
+            "$ref": "#/parameters/Page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of projects.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Project"
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}": {
+      "get": {
+        "operationId": "GetProject",
+        "summary": "Get project",
+        "description": "Gets a single project by numeric ID or URL-encoded path (group/project).",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The project.",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}/issues": {
+      "get": {
+        "operationId": "ListIssues",
+        "summary": "List issues",
+        "description": "Lists issues for a project.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "opened",
+              "closed",
+              "all"
+            ],
+            "default": "opened",
+            "description": "Return issues in the given state.",
+            "x-ms-summary": "State"
+          },
+          {
+            "name": "labels",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Comma-separated list of label names.",
+            "x-ms-summary": "Labels"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Search issues by title and description.",
+            "x-ms-summary": "Search"
+          },
+          {
+            "$ref": "#/parameters/PerPage"
+          },
+          {
+            "$ref": "#/parameters/Page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of issues.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Issue"
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "CreateIssue",
+        "summary": "Create issue",
+        "description": "Creates a new issue in a project.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateIssueRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The created issue.",
+            "schema": {
+              "$ref": "#/definitions/Issue"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}/issues/{issue_iid}": {
+      "get": {
+        "operationId": "GetIssue",
+        "summary": "Get issue",
+        "description": "Gets a single project issue by its internal ID (IID).",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "$ref": "#/parameters/IssueIid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The issue.",
+            "schema": {
+              "$ref": "#/definitions/Issue"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "UpdateIssue",
+        "summary": "Update issue",
+        "description": "Updates an existing project issue.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "$ref": "#/parameters/IssueIid"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateIssueRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The updated issue.",
+            "schema": {
+              "$ref": "#/definitions/Issue"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}/issues/{issue_iid}/notes": {
+      "post": {
+        "operationId": "AddIssueComment",
+        "summary": "Add comment to issue",
+        "description": "Adds a note (comment) to a project issue.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "$ref": "#/parameters/IssueIid"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateNoteRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The created note.",
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}/merge_requests": {
+      "get": {
+        "operationId": "ListMergeRequests",
+        "summary": "List merge requests",
+        "description": "Lists merge requests for a project.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "opened",
+              "closed",
+              "locked",
+              "merged",
+              "all"
+            ],
+            "default": "opened",
+            "description": "Return merge requests in the given state.",
+            "x-ms-summary": "State"
+          },
+          {
+            "$ref": "#/parameters/PerPage"
+          },
+          {
+            "$ref": "#/parameters/Page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of merge requests.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MergeRequest"
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "CreateMergeRequest",
+        "summary": "Create merge request",
+        "description": "Creates a merge request in a project.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateMergeRequestRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The created merge request.",
+            "schema": {
+              "$ref": "#/definitions/MergeRequest"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}/pipelines": {
+      "get": {
+        "operationId": "ListPipelines",
+        "summary": "List pipelines",
+        "description": "Lists pipelines for a project.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "ref",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Filter pipelines by branch or tag name.",
+            "x-ms-summary": "Ref (branch or tag)"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "created",
+              "waiting_for_resource",
+              "preparing",
+              "pending",
+              "running",
+              "success",
+              "failed",
+              "canceled",
+              "skipped",
+              "manual",
+              "scheduled"
+            ],
+            "description": "Filter pipelines by status.",
+            "x-ms-summary": "Status"
+          },
+          {
+            "$ref": "#/parameters/PerPage"
+          },
+          {
+            "$ref": "#/parameters/Page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of pipelines.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Pipeline"
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}/pipeline": {
+      "post": {
+        "operationId": "TriggerPipeline",
+        "summary": "Trigger pipeline",
+        "description": "Creates (triggers) a new pipeline for a given branch or tag.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TriggerPipelineRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The triggered pipeline.",
+            "schema": {
+              "$ref": "#/definitions/Pipeline"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "ProjectId": {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "The project numeric ID or URL-encoded path (for example, my-group/my-project).",
+      "x-ms-summary": "Project ID or path",
+      "x-ms-url-encoding": "single"
+    },
+    "IssueIid": {
+      "name": "issue_iid",
+      "in": "path",
+      "required": true,
+      "type": "integer",
+      "description": "The internal ID (IID) of the issue within the project.",
+      "x-ms-summary": "Issue IID"
+    },
+    "PerPage": {
+      "name": "per_page",
+      "in": "query",
+      "required": false,
+      "type": "integer",
+      "default": 20,
+      "maximum": 100,
+      "description": "Number of items to return per page (max 100).",
+      "x-ms-summary": "Items per page"
+    },
+    "Page": {
+      "name": "page",
+      "in": "query",
+      "required": false,
+      "type": "integer",
+      "default": 1,
+      "description": "Page number of results to return.",
+      "x-ms-summary": "Page"
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "User ID.",
+          "x-ms-summary": "ID"
+        },
+        "username": {
+          "type": "string",
+          "description": "Username.",
+          "x-ms-summary": "Username"
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name.",
+          "x-ms-summary": "Name"
+        },
+        "email": {
+          "type": "string",
+          "description": "Primary email.",
+          "x-ms-summary": "Email"
+        },
+        "state": {
+          "type": "string",
+          "description": "Account state.",
+          "x-ms-summary": "State"
+        },
+        "web_url": {
+          "type": "string",
+          "description": "Profile URL.",
+          "x-ms-summary": "Web URL"
+        },
+        "avatar_url": {
+          "type": "string",
+          "description": "Avatar URL.",
+          "x-ms-summary": "Avatar URL"
+        }
+      }
+    },
+    "UserRef": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "User ID.",
+          "x-ms-summary": "ID"
+        },
+        "username": {
+          "type": "string",
+          "description": "Username.",
+          "x-ms-summary": "Username"
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name.",
+          "x-ms-summary": "Name"
+        }
+      }
+    },
+    "Project": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Project ID.",
+          "x-ms-summary": "ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "Project name.",
+          "x-ms-summary": "Name"
+        },
+        "path_with_namespace": {
+          "type": "string",
+          "description": "Full path including namespace.",
+          "x-ms-summary": "Path with namespace"
+        },
+        "description": {
+          "type": "string",
+          "description": "Project description.",
+          "x-ms-summary": "Description"
+        },
+        "default_branch": {
+          "type": "string",
+          "description": "Default branch name.",
+          "x-ms-summary": "Default branch"
+        },
+        "visibility": {
+          "type": "string",
+          "description": "Visibility level.",
+          "x-ms-summary": "Visibility"
+        },
+        "web_url": {
+          "type": "string",
+          "description": "Project URL.",
+          "x-ms-summary": "Web URL"
+        },
+        "star_count": {
+          "type": "integer",
+          "description": "Number of stars.",
+          "x-ms-summary": "Star count"
+        },
+        "last_activity_at": {
+          "type": "string",
+          "description": "Timestamp of last activity.",
+          "x-ms-summary": "Last activity at"
+        }
+      }
+    },
+    "Issue": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Global issue ID.",
+          "x-ms-summary": "ID"
+        },
+        "iid": {
+          "type": "integer",
+          "description": "Internal issue ID within the project.",
+          "x-ms-summary": "IID"
+        },
+        "project_id": {
+          "type": "integer",
+          "description": "Owning project ID.",
+          "x-ms-summary": "Project ID"
+        },
+        "title": {
+          "type": "string",
+          "description": "Issue title.",
+          "x-ms-summary": "Title"
+        },
+        "description": {
+          "type": "string",
+          "description": "Issue description.",
+          "x-ms-summary": "Description"
+        },
+        "state": {
+          "type": "string",
+          "description": "Issue state (opened or closed).",
+          "x-ms-summary": "State"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Applied labels.",
+          "x-ms-summary": "Labels"
+        },
+        "web_url": {
+          "type": "string",
+          "description": "Issue URL.",
+          "x-ms-summary": "Web URL"
+        },
+        "author": {
+          "$ref": "#/definitions/UserRef"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "Creation timestamp.",
+          "x-ms-summary": "Created at"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "Last update timestamp.",
+          "x-ms-summary": "Updated at"
+        }
+      }
+    },
+    "CreateIssueRequest": {
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Title of the issue.",
+          "x-ms-summary": "Title"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the issue (Markdown).",
+          "x-ms-summary": "Description"
+        },
+        "labels": {
+          "type": "string",
+          "description": "Comma-separated list of label names.",
+          "x-ms-summary": "Labels"
+        },
+        "assignee_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "description": "IDs of users to assign.",
+          "x-ms-summary": "Assignee IDs"
+        },
+        "milestone_id": {
+          "type": "integer",
+          "description": "Milestone ID to associate.",
+          "x-ms-summary": "Milestone ID"
+        }
+      }
+    },
+    "UpdateIssueRequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "New title of the issue.",
+          "x-ms-summary": "Title"
+        },
+        "description": {
+          "type": "string",
+          "description": "New description of the issue (Markdown).",
+          "x-ms-summary": "Description"
+        },
+        "labels": {
+          "type": "string",
+          "description": "Comma-separated list of label names (replaces existing).",
+          "x-ms-summary": "Labels"
+        },
+        "state_event": {
+          "type": "string",
+          "enum": [
+            "close",
+            "reopen"
+          ],
+          "description": "State transition to apply.",
+          "x-ms-summary": "State event"
+        }
+      }
+    },
+    "Note": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Note ID.",
+          "x-ms-summary": "ID"
+        },
+        "body": {
+          "type": "string",
+          "description": "Note content.",
+          "x-ms-summary": "Body"
+        },
+        "author": {
+          "$ref": "#/definitions/UserRef"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "Creation timestamp.",
+          "x-ms-summary": "Created at"
+        }
+      }
+    },
+    "CreateNoteRequest": {
+      "type": "object",
+      "required": [
+        "body"
+      ],
+      "properties": {
+        "body": {
+          "type": "string",
+          "description": "The comment content (Markdown).",
+          "x-ms-summary": "Body"
+        }
+      }
+    },
+    "MergeRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Global merge request ID.",
+          "x-ms-summary": "ID"
+        },
+        "iid": {
+          "type": "integer",
+          "description": "Internal merge request ID within the project.",
+          "x-ms-summary": "IID"
+        },
+        "project_id": {
+          "type": "integer",
+          "description": "Owning project ID.",
+          "x-ms-summary": "Project ID"
+        },
+        "title": {
+          "type": "string",
+          "description": "Merge request title.",
+          "x-ms-summary": "Title"
+        },
+        "description": {
+          "type": "string",
+          "description": "Merge request description.",
+          "x-ms-summary": "Description"
+        },
+        "state": {
+          "type": "string",
+          "description": "Merge request state.",
+          "x-ms-summary": "State"
+        },
+        "source_branch": {
+          "type": "string",
+          "description": "Source branch.",
+          "x-ms-summary": "Source branch"
+        },
+        "target_branch": {
+          "type": "string",
+          "description": "Target branch.",
+          "x-ms-summary": "Target branch"
+        },
+        "web_url": {
+          "type": "string",
+          "description": "Merge request URL.",
+          "x-ms-summary": "Web URL"
+        },
+        "author": {
+          "$ref": "#/definitions/UserRef"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "Creation timestamp.",
+          "x-ms-summary": "Created at"
+        }
+      }
+    },
+    "CreateMergeRequestRequest": {
+      "type": "object",
+      "required": [
+        "source_branch",
+        "target_branch",
+        "title"
+      ],
+      "properties": {
+        "source_branch": {
+          "type": "string",
+          "description": "The source branch.",
+          "x-ms-summary": "Source branch"
+        },
+        "target_branch": {
+          "type": "string",
+          "description": "The target branch.",
+          "x-ms-summary": "Target branch"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the merge request.",
+          "x-ms-summary": "Title"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the merge request (Markdown).",
+          "x-ms-summary": "Description"
+        },
+        "remove_source_branch": {
+          "type": "boolean",
+          "description": "Remove the source branch when merged.",
+          "x-ms-summary": "Remove source branch"
+        }
+      }
+    },
+    "Pipeline": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Pipeline ID.",
+          "x-ms-summary": "ID"
+        },
+        "iid": {
+          "type": "integer",
+          "description": "Internal pipeline ID within the project.",
+          "x-ms-summary": "IID"
+        },
+        "project_id": {
+          "type": "integer",
+          "description": "Owning project ID.",
+          "x-ms-summary": "Project ID"
+        },
+        "status": {
+          "type": "string",
+          "description": "Pipeline status.",
+          "x-ms-summary": "Status"
+        },
+        "ref": {
+          "type": "string",
+          "description": "Branch or tag the pipeline runs on.",
+          "x-ms-summary": "Ref"
+        },
+        "sha": {
+          "type": "string",
+          "description": "Commit SHA.",
+          "x-ms-summary": "SHA"
+        },
+        "web_url": {
+          "type": "string",
+          "description": "Pipeline URL.",
+          "x-ms-summary": "Web URL"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "Creation timestamp.",
+          "x-ms-summary": "Created at"
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "Last update timestamp.",
+          "x-ms-summary": "Updated at"
+        }
+      }
+    },
+    "TriggerPipelineRequest": {
+      "type": "object",
+      "required": [
+        "ref"
+      ],
+      "properties": {
+        "ref": {
+          "type": "string",
+          "description": "The branch or tag to run the pipeline on.",
+          "x-ms-summary": "Ref (branch or tag)"
+        },
+        "variables": {
+          "type": "array",
+          "description": "Pipeline variables.",
+          "x-ms-summary": "Variables",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string",
+                "description": "Variable name.",
+                "x-ms-summary": "Key"
+              },
+              "value": {
+                "type": "string",
+                "description": "Variable value.",
+                "x-ms-summary": "Value"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "Error message.",
+          "x-ms-summary": "Message"
+        },
+        "error": {
+          "type": "string",
+          "description": "Error identifier.",
+          "x-ms-summary": "Error"
+        },
+        "error_description": {
+          "type": "string",
+          "description": "Detailed error description.",
+          "x-ms-summary": "Error description"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "oauth2-auth": {
+      "type": "oauth2",
+      "flow": "accessCode",
+      "authorizationUrl": "https://gitlab.com/oauth/authorize",
+      "tokenUrl": "https://gitlab.com/oauth/token",
+      "scopes": {
+        "api": "Full read/write access to the GitLab API."
+      }
+    }
+  },
+  "security": [
+    {
+      "oauth2-auth": [
+        "api"
+      ]
+    }
+  ],
+  "tags": [
+    {
+      "name": "GitLab"
+    }
+  ]
+}
