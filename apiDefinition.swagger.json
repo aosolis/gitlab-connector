@@ -2081,6 +2081,16 @@
           "description": "Hook ID.",
           "x-ms-summary": "ID"
         },
+        "name": {
+          "type": "string",
+          "description": "Hook name.",
+          "x-ms-summary": "Name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Hook description.",
+          "x-ms-summary": "Description"
+        },
         "url": {
           "type": "string",
           "description": "Callback URL the hook posts to.",
@@ -2091,25 +2101,80 @@
           "description": "Owning project ID.",
           "x-ms-summary": "Project ID"
         },
+        "push_events": {
+          "type": "boolean",
+          "description": "Whether the hook fires on push events.",
+          "x-ms-summary": "Push events"
+        },
+        "tag_push_events": {
+          "type": "boolean",
+          "description": "Whether the hook fires on tag push events.",
+          "x-ms-summary": "Tag push events"
+        },
         "issues_events": {
           "type": "boolean",
           "description": "Whether the hook fires on issue events.",
           "x-ms-summary": "Issue events"
         },
-        "push_events": {
+        "confidential_issues_events": {
           "type": "boolean",
-          "description": "Whether the hook fires on push events.",
-          "x-ms-summary": "Push events"
+          "description": "Whether the hook fires on confidential issue events.",
+          "x-ms-summary": "Confidential issue events"
         },
         "merge_requests_events": {
           "type": "boolean",
           "description": "Whether the hook fires on merge request events.",
           "x-ms-summary": "Merge request events"
         },
+        "note_events": {
+          "type": "boolean",
+          "description": "Whether the hook fires on comment (note) events.",
+          "x-ms-summary": "Note events"
+        },
+        "confidential_note_events": {
+          "type": "boolean",
+          "description": "Whether the hook fires on internal (confidential) note events.",
+          "x-ms-summary": "Confidential note events"
+        },
+        "job_events": {
+          "type": "boolean",
+          "description": "Whether the hook fires on job events.",
+          "x-ms-summary": "Job events"
+        },
         "pipeline_events": {
           "type": "boolean",
           "description": "Whether the hook fires on pipeline events.",
           "x-ms-summary": "Pipeline events"
+        },
+        "wiki_page_events": {
+          "type": "boolean",
+          "description": "Whether the hook fires on wiki page events.",
+          "x-ms-summary": "Wiki page events"
+        },
+        "deployment_events": {
+          "type": "boolean",
+          "description": "Whether the hook fires on deployment events.",
+          "x-ms-summary": "Deployment events"
+        },
+        "releases_events": {
+          "type": "boolean",
+          "description": "Whether the hook fires on release events.",
+          "x-ms-summary": "Release events"
+        },
+        "milestone_events": {
+          "type": "boolean",
+          "description": "Whether the hook fires on milestone events.",
+          "x-ms-summary": "Milestone events"
+        },
+        "feature_flag_events": {
+          "type": "boolean",
+          "description": "Whether the hook fires on feature flag events.",
+          "x-ms-summary": "Feature flag events"
+        },
+        "resource_access_token_events": {
+          "type": "boolean",
+          "description": "Whether the hook fires on project access token expiry events.",
+          "x-ms-summary": "Access token events"
         },
         "enable_ssl_verification": {
           "type": "boolean",
