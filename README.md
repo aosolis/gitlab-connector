@@ -6,6 +6,8 @@ Authentication is **OAuth 2.0** (authorization code flow) against a GitLab appli
 
 ## Operations
 
+## Actions
+
 | Operation | Method | Path |
 | --- | --- | --- |
 | Get current user | GET | `/user` |
@@ -20,6 +22,21 @@ Authentication is **OAuth 2.0** (authorization code flow) against a GitLab appli
 | Create merge request | POST | `/projects/{id}/merge_requests` |
 | List pipelines | GET | `/projects/{id}/pipelines` |
 | Trigger pipeline | POST | `/projects/{id}/pipeline` |
+| List project hooks | GET | `/projects/{id}/hooks` |
+| Delete project hook | DELETE | `/projects/{id}/hooks/{hook_id}` |
+
+## Triggers
+
+| Trigger | Method | Path |
+| --- | --- | --- |
+| When an issue is created or updated | POST (subscribe) | `/projects/{id}/hooks` |
+
+The **When an issue is created or updated** trigger is a GitLab webhook trigger:
+
+- On flow save, it registers a GitLab project hook (`issues_events`) whose callback URL is injected by Power Platform (`x-ms-notification-url`).
+- GitLab then POSTs each issue event (open, update, close, reopen) to the flow; downstream steps get typed outputs from the `IssueEvent` schema.
+- **Auto-unsubscribe:** GitLab's create-hook response has no `Location` header, so `script.csx` reads the returned hook `id` and sets an absolute `Location` header. When the flow is turned off, Power Platform issues a DELETE to that URL, removing the hook.
+- Requires the **Maintainer** role (or higher) on the project to manage webhooks. `List project hooks` / `Delete project hook` are provided for manual cleanup.
 
 The GitLab API base path `/api/v4` is applied via the host template in `apiProperties.json` (the `dynamichosturl` policy replaces the host and drops the swagger `basePath`, so `/api/v4` is included in the template). The **project `{id}`** parameter accepts either a numeric ID or a URL-encoded path such as `my-group/my-project`.
 
@@ -27,8 +44,9 @@ The GitLab API base path `/api/v4` is applied via the host template in `apiPrope
 
 | File | Purpose |
 | --- | --- |
-| `apiDefinition.swagger.json` | OpenAPI 2.0 (Swagger) definition of the operations. |
+| `apiDefinition.swagger.json` | OpenAPI 2.0 (Swagger) definition of the actions and triggers. |
 | `apiProperties.json` | Connection parameters, OAuth 2.0 settings, and the dynamic-host policy. |
+| `script.csx` | C# custom code that sets the `Location` header on the webhook subscribe response so triggers auto-unsubscribe. |
 | `settings.json` | `paconn` CLI settings. |
 | `icon.png` | Connector icon (brand color `#FC6D26`). |
 

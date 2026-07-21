@@ -512,6 +512,109 @@
           }
         }
       }
+    },
+    "/projects/{id}/hooks": {
+      "post": {
+        "operationId": "OnIssueEvent",
+        "summary": "When an issue is created or updated",
+        "description": "Triggers when an issue event occurs in the project (create, update, close, or reopen). Registers a GitLab project webhook scoped to issue events; Power Platform removes the webhook automatically when the flow is turned off.",
+        "x-ms-trigger": "single",
+        "x-ms-trigger-hint": "To see it work, create or edit an issue in the project.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/IssueHookSubscription"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Webhook registered.",
+            "schema": {
+              "$ref": "#/definitions/ProjectHook"
+            },
+            "headers": {
+              "Location": {
+                "type": "string",
+                "description": "URL of the created webhook, used to remove it on unsubscribe."
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "x-ms-notification-content": {
+          "description": "GitLab issue event payload.",
+          "schema": {
+            "$ref": "#/definitions/IssueEvent"
+          }
+        }
+      },
+      "get": {
+        "operationId": "ListProjectHooks",
+        "summary": "List project hooks",
+        "description": "Lists the webhooks configured on a project.",
+        "x-ms-visibility": "advanced",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of project hooks.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ProjectHook"
+              }
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}/hooks/{hook_id}": {
+      "delete": {
+        "operationId": "DeleteProjectHook",
+        "summary": "Delete project hook",
+        "description": "Deletes a project webhook by its ID. Use this to clean up hooks manually if needed.",
+        "x-ms-visibility": "advanced",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "$ref": "#/parameters/HookId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The hook was deleted."
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -531,6 +634,14 @@
       "type": "integer",
       "description": "The internal ID (IID) of the issue within the project.",
       "x-ms-summary": "Issue IID"
+    },
+    "HookId": {
+      "name": "hook_id",
+      "in": "path",
+      "required": true,
+      "type": "integer",
+      "description": "The ID of the project webhook.",
+      "x-ms-summary": "Hook ID"
     },
     "PerPage": {
       "name": "per_page",
@@ -995,6 +1106,204 @@
                 "type": "string",
                 "description": "Variable value.",
                 "x-ms-summary": "Value"
+              }
+            }
+          }
+        }
+      }
+    },
+    "IssueHookSubscription": {
+      "type": "object",
+      "required": [
+        "url"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "Callback URL that GitLab posts events to. Populated automatically by Power Platform.",
+          "x-ms-notification-url": true,
+          "x-ms-visibility": "internal"
+        },
+        "issues_events": {
+          "type": "boolean",
+          "default": true,
+          "description": "Subscribe to issue events.",
+          "x-ms-visibility": "internal"
+        },
+        "push_events": {
+          "type": "boolean",
+          "default": false,
+          "description": "Subscribe to push events (disabled to limit the hook to issue events).",
+          "x-ms-visibility": "internal"
+        },
+        "enable_ssl_verification": {
+          "type": "boolean",
+          "default": true,
+          "description": "Verify the SSL certificate of the callback URL.",
+          "x-ms-visibility": "internal"
+        },
+        "token": {
+          "type": "string",
+          "description": "Optional secret token; GitLab sends it back in the X-Gitlab-Token header of each event.",
+          "x-ms-summary": "Secret token",
+          "x-ms-visibility": "advanced"
+        }
+      }
+    },
+    "ProjectHook": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Hook ID.",
+          "x-ms-summary": "ID"
+        },
+        "url": {
+          "type": "string",
+          "description": "Callback URL the hook posts to.",
+          "x-ms-summary": "URL"
+        },
+        "project_id": {
+          "type": "integer",
+          "description": "Owning project ID.",
+          "x-ms-summary": "Project ID"
+        },
+        "issues_events": {
+          "type": "boolean",
+          "description": "Whether the hook fires on issue events.",
+          "x-ms-summary": "Issue events"
+        },
+        "push_events": {
+          "type": "boolean",
+          "description": "Whether the hook fires on push events.",
+          "x-ms-summary": "Push events"
+        },
+        "merge_requests_events": {
+          "type": "boolean",
+          "description": "Whether the hook fires on merge request events.",
+          "x-ms-summary": "Merge request events"
+        },
+        "pipeline_events": {
+          "type": "boolean",
+          "description": "Whether the hook fires on pipeline events.",
+          "x-ms-summary": "Pipeline events"
+        },
+        "enable_ssl_verification": {
+          "type": "boolean",
+          "description": "Whether SSL verification is enabled.",
+          "x-ms-summary": "SSL verification"
+        },
+        "created_at": {
+          "type": "string",
+          "description": "Creation timestamp.",
+          "x-ms-summary": "Created at"
+        }
+      }
+    },
+    "IssueEvent": {
+      "type": "object",
+      "properties": {
+        "object_kind": {
+          "type": "string",
+          "description": "Event kind (issue).",
+          "x-ms-summary": "Object kind"
+        },
+        "event_type": {
+          "type": "string",
+          "description": "Event type.",
+          "x-ms-summary": "Event type"
+        },
+        "user": {
+          "$ref": "#/definitions/UserRef"
+        },
+        "project": {
+          "type": "object",
+          "description": "The project the event belongs to.",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "Project ID.",
+              "x-ms-summary": "Project ID"
+            },
+            "name": {
+              "type": "string",
+              "description": "Project name.",
+              "x-ms-summary": "Project name"
+            },
+            "path_with_namespace": {
+              "type": "string",
+              "description": "Full path including namespace.",
+              "x-ms-summary": "Path with namespace"
+            },
+            "web_url": {
+              "type": "string",
+              "description": "Project URL.",
+              "x-ms-summary": "Project URL"
+            }
+          }
+        },
+        "object_attributes": {
+          "type": "object",
+          "description": "The issue that triggered the event.",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "description": "Global issue ID.",
+              "x-ms-summary": "Issue ID"
+            },
+            "iid": {
+              "type": "integer",
+              "description": "Internal issue ID within the project.",
+              "x-ms-summary": "Issue IID"
+            },
+            "title": {
+              "type": "string",
+              "description": "Issue title.",
+              "x-ms-summary": "Title"
+            },
+            "description": {
+              "type": "string",
+              "description": "Issue description.",
+              "x-ms-summary": "Description"
+            },
+            "state": {
+              "type": "string",
+              "description": "Issue state.",
+              "x-ms-summary": "State"
+            },
+            "action": {
+              "type": "string",
+              "description": "The action that occurred (open, update, close, reopen).",
+              "x-ms-summary": "Action"
+            },
+            "url": {
+              "type": "string",
+              "description": "Issue URL.",
+              "x-ms-summary": "URL"
+            },
+            "created_at": {
+              "type": "string",
+              "description": "Creation timestamp.",
+              "x-ms-summary": "Created at"
+            },
+            "updated_at": {
+              "type": "string",
+              "description": "Last update timestamp.",
+              "x-ms-summary": "Updated at"
+            }
+          }
+        },
+        "labels": {
+          "type": "array",
+          "description": "Labels applied to the issue.",
+          "x-ms-summary": "Labels",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Label title.",
+                "x-ms-summary": "Title"
               }
             }
           }
