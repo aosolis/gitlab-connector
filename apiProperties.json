@@ -50,7 +50,7 @@
         "templateId": "dynamichosturl",
         "title": "Route requests to the GitLab host",
         "parameters": {
-          "x-ms-apimTemplateParameter.urlTemplate": "https://@connectionParameters('gitlabHost')"
+          "x-ms-apimTemplateParameter.urlTemplate": "https://@connectionParameters('gitlabHost')/api/v4"
         }
       }
     ],

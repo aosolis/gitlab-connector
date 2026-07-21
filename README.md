@@ -21,7 +21,7 @@ Authentication is **OAuth 2.0** (authorization code flow) against a GitLab appli
 | List pipelines | GET | `/projects/{id}/pipelines` |
 | Trigger pipeline | POST | `/projects/{id}/pipeline` |
 
-The GitLab base path is `/api/v4`. The **project `{id}`** parameter accepts either a numeric ID or a URL-encoded path such as `my-group/my-project`.
+The GitLab API base path `/api/v4` is applied via the host template in `apiProperties.json` (the `dynamichosturl` policy replaces the host and drops the swagger `basePath`, so `/api/v4` is included in the template). The **project `{id}`** parameter accepts either a numeric ID or a URL-encoded path such as `my-group/my-project`.
 
 ## Files
 

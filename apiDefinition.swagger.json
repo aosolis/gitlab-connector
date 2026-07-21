@@ -10,7 +10,7 @@
     }
   },
   "host": "gitlab.com",
-  "basePath": "/api/v4",
+  "basePath": "/",
   "schemes": [
     "https"
   ],
