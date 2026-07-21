@@ -34,10 +34,7 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
+            "description": "Error"
           }
         }
       }
@@ -100,10 +97,7 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
+            "description": "Error"
           }
         }
       }
@@ -126,10 +120,7 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
+            "description": "Error"
           }
         }
       }
@@ -191,10 +182,7 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
+            "description": "Error"
           }
         }
       },
@@ -223,10 +211,7 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
+            "description": "Error"
           }
         }
       }
@@ -252,10 +237,7 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
+            "description": "Error"
           }
         }
       },
@@ -287,10 +269,7 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
+            "description": "Error"
           }
         }
       }
@@ -324,10 +303,7 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
+            "description": "Error"
           }
         }
       }
@@ -375,10 +351,7 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
+            "description": "Error"
           }
         }
       },
@@ -407,10 +380,7 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
+            "description": "Error"
           }
         }
       }
@@ -471,10 +441,7 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
+            "description": "Error"
           }
         }
       }
@@ -505,10 +472,7 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
+            "description": "Error"
           }
         }
       }
@@ -535,10 +499,7 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
+            "description": "Error"
           }
         }
       }
@@ -562,15 +523,18 @@
             "description": "The hook was deleted."
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
+            "description": "Error"
           }
         }
       }
     },
     "/projects/{id}/push_hooks": {
+      "x-ms-notification-content": {
+        "description": "When code is pushed payload.",
+        "schema": {
+          "$ref": "#/definitions/PushEvent"
+        }
+      },
       "post": {
         "operationId": "OnPushEvent",
         "summary": "When code is pushed",
@@ -588,7 +552,9 @@
             "schema": {
               "type": "object",
               "required": [
-                "notificationUrl"
+                "notificationUrl",
+                "push_events",
+                "enable_ssl_verification"
               ],
               "properties": {
                 "notificationUrl": {
@@ -627,21 +593,18 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        },
-        "x-ms-notification-content": {
-          "description": "When code is pushed payload.",
-          "schema": {
-            "$ref": "#/definitions/PushEvent"
+            "description": "Error"
           }
         }
       }
     },
     "/projects/{id}/tag_push_hooks": {
+      "x-ms-notification-content": {
+        "description": "When a tag is pushed payload.",
+        "schema": {
+          "$ref": "#/definitions/TagPushEvent"
+        }
+      },
       "post": {
         "operationId": "OnTagPushEvent",
         "summary": "When a tag is pushed",
@@ -659,7 +622,10 @@
             "schema": {
               "type": "object",
               "required": [
-                "notificationUrl"
+                "notificationUrl",
+                "tag_push_events",
+                "push_events",
+                "enable_ssl_verification"
               ],
               "properties": {
                 "notificationUrl": {
@@ -704,21 +670,18 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        },
-        "x-ms-notification-content": {
-          "description": "When a tag is pushed payload.",
-          "schema": {
-            "$ref": "#/definitions/TagPushEvent"
+            "description": "Error"
           }
         }
       }
     },
     "/projects/{id}/issue_hooks": {
+      "x-ms-notification-content": {
+        "description": "When an issue is created or updated payload.",
+        "schema": {
+          "$ref": "#/definitions/IssueEvent"
+        }
+      },
       "post": {
         "operationId": "OnIssueEvent",
         "summary": "When an issue is created or updated",
@@ -736,7 +699,10 @@
             "schema": {
               "type": "object",
               "required": [
-                "notificationUrl"
+                "notificationUrl",
+                "issues_events",
+                "push_events",
+                "enable_ssl_verification"
               ],
               "properties": {
                 "notificationUrl": {
@@ -787,21 +753,18 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        },
-        "x-ms-notification-content": {
-          "description": "When an issue is created or updated payload.",
-          "schema": {
-            "$ref": "#/definitions/IssueEvent"
+            "description": "Error"
           }
         }
       }
     },
     "/projects/{id}/merge_request_hooks": {
+      "x-ms-notification-content": {
+        "description": "When a merge request is created or updated payload.",
+        "schema": {
+          "$ref": "#/definitions/MergeRequestEvent"
+        }
+      },
       "post": {
         "operationId": "OnMergeRequestEvent",
         "summary": "When a merge request is created or updated",
@@ -819,7 +782,10 @@
             "schema": {
               "type": "object",
               "required": [
-                "notificationUrl"
+                "notificationUrl",
+                "merge_requests_events",
+                "push_events",
+                "enable_ssl_verification"
               ],
               "properties": {
                 "notificationUrl": {
@@ -864,21 +830,18 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        },
-        "x-ms-notification-content": {
-          "description": "When a merge request is created or updated payload.",
-          "schema": {
-            "$ref": "#/definitions/MergeRequestEvent"
+            "description": "Error"
           }
         }
       }
     },
     "/projects/{id}/note_hooks": {
+      "x-ms-notification-content": {
+        "description": "When a comment is added payload.",
+        "schema": {
+          "$ref": "#/definitions/NoteEvent"
+        }
+      },
       "post": {
         "operationId": "OnNoteEvent",
         "summary": "When a comment is added",
@@ -896,7 +859,10 @@
             "schema": {
               "type": "object",
               "required": [
-                "notificationUrl"
+                "notificationUrl",
+                "note_events",
+                "push_events",
+                "enable_ssl_verification"
               ],
               "properties": {
                 "notificationUrl": {
@@ -947,21 +913,18 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        },
-        "x-ms-notification-content": {
-          "description": "When a comment is added payload.",
-          "schema": {
-            "$ref": "#/definitions/NoteEvent"
+            "description": "Error"
           }
         }
       }
     },
     "/projects/{id}/pipeline_hooks": {
+      "x-ms-notification-content": {
+        "description": "When a pipeline status changes payload.",
+        "schema": {
+          "$ref": "#/definitions/PipelineEvent"
+        }
+      },
       "post": {
         "operationId": "OnPipelineEvent",
         "summary": "When a pipeline status changes",
@@ -979,7 +942,10 @@
             "schema": {
               "type": "object",
               "required": [
-                "notificationUrl"
+                "notificationUrl",
+                "pipeline_events",
+                "push_events",
+                "enable_ssl_verification"
               ],
               "properties": {
                 "notificationUrl": {
@@ -1024,21 +990,18 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        },
-        "x-ms-notification-content": {
-          "description": "When a pipeline status changes payload.",
-          "schema": {
-            "$ref": "#/definitions/PipelineEvent"
+            "description": "Error"
           }
         }
       }
     },
     "/projects/{id}/job_hooks": {
+      "x-ms-notification-content": {
+        "description": "When a job status changes payload.",
+        "schema": {
+          "$ref": "#/definitions/JobEvent"
+        }
+      },
       "post": {
         "operationId": "OnJobEvent",
         "summary": "When a job status changes",
@@ -1056,7 +1019,10 @@
             "schema": {
               "type": "object",
               "required": [
-                "notificationUrl"
+                "notificationUrl",
+                "job_events",
+                "push_events",
+                "enable_ssl_verification"
               ],
               "properties": {
                 "notificationUrl": {
@@ -1101,21 +1067,18 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        },
-        "x-ms-notification-content": {
-          "description": "When a job status changes payload.",
-          "schema": {
-            "$ref": "#/definitions/JobEvent"
+            "description": "Error"
           }
         }
       }
     },
     "/projects/{id}/wiki_page_hooks": {
+      "x-ms-notification-content": {
+        "description": "When a wiki page changes payload.",
+        "schema": {
+          "$ref": "#/definitions/WikiPageEvent"
+        }
+      },
       "post": {
         "operationId": "OnWikiPageEvent",
         "summary": "When a wiki page changes",
@@ -1133,7 +1096,10 @@
             "schema": {
               "type": "object",
               "required": [
-                "notificationUrl"
+                "notificationUrl",
+                "wiki_page_events",
+                "push_events",
+                "enable_ssl_verification"
               ],
               "properties": {
                 "notificationUrl": {
@@ -1178,21 +1144,18 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        },
-        "x-ms-notification-content": {
-          "description": "When a wiki page changes payload.",
-          "schema": {
-            "$ref": "#/definitions/WikiPageEvent"
+            "description": "Error"
           }
         }
       }
     },
     "/projects/{id}/deployment_hooks": {
+      "x-ms-notification-content": {
+        "description": "When a deployment status changes payload.",
+        "schema": {
+          "$ref": "#/definitions/DeploymentEvent"
+        }
+      },
       "post": {
         "operationId": "OnDeploymentEvent",
         "summary": "When a deployment status changes",
@@ -1210,7 +1173,10 @@
             "schema": {
               "type": "object",
               "required": [
-                "notificationUrl"
+                "notificationUrl",
+                "deployment_events",
+                "push_events",
+                "enable_ssl_verification"
               ],
               "properties": {
                 "notificationUrl": {
@@ -1255,21 +1221,18 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        },
-        "x-ms-notification-content": {
-          "description": "When a deployment status changes payload.",
-          "schema": {
-            "$ref": "#/definitions/DeploymentEvent"
+            "description": "Error"
           }
         }
       }
     },
     "/projects/{id}/release_hooks": {
+      "x-ms-notification-content": {
+        "description": "When a release is created or updated payload.",
+        "schema": {
+          "$ref": "#/definitions/ReleaseEvent"
+        }
+      },
       "post": {
         "operationId": "OnReleaseEvent",
         "summary": "When a release is created or updated",
@@ -1287,7 +1250,10 @@
             "schema": {
               "type": "object",
               "required": [
-                "notificationUrl"
+                "notificationUrl",
+                "releases_events",
+                "push_events",
+                "enable_ssl_verification"
               ],
               "properties": {
                 "notificationUrl": {
@@ -1332,21 +1298,18 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        },
-        "x-ms-notification-content": {
-          "description": "When a release is created or updated payload.",
-          "schema": {
-            "$ref": "#/definitions/ReleaseEvent"
+            "description": "Error"
           }
         }
       }
     },
     "/projects/{id}/milestone_hooks": {
+      "x-ms-notification-content": {
+        "description": "When a milestone is created or updated payload.",
+        "schema": {
+          "$ref": "#/definitions/MilestoneEvent"
+        }
+      },
       "post": {
         "operationId": "OnMilestoneEvent",
         "summary": "When a milestone is created or updated",
@@ -1364,7 +1327,10 @@
             "schema": {
               "type": "object",
               "required": [
-                "notificationUrl"
+                "notificationUrl",
+                "milestone_events",
+                "push_events",
+                "enable_ssl_verification"
               ],
               "properties": {
                 "notificationUrl": {
@@ -1409,21 +1375,18 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        },
-        "x-ms-notification-content": {
-          "description": "When a milestone is created or updated payload.",
-          "schema": {
-            "$ref": "#/definitions/MilestoneEvent"
+            "description": "Error"
           }
         }
       }
     },
     "/projects/{id}/feature_flag_hooks": {
+      "x-ms-notification-content": {
+        "description": "When a feature flag changes payload.",
+        "schema": {
+          "$ref": "#/definitions/FeatureFlagEvent"
+        }
+      },
       "post": {
         "operationId": "OnFeatureFlagEvent",
         "summary": "When a feature flag changes",
@@ -1441,7 +1404,10 @@
             "schema": {
               "type": "object",
               "required": [
-                "notificationUrl"
+                "notificationUrl",
+                "feature_flag_events",
+                "push_events",
+                "enable_ssl_verification"
               ],
               "properties": {
                 "notificationUrl": {
@@ -1486,21 +1452,18 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        },
-        "x-ms-notification-content": {
-          "description": "When a feature flag changes payload.",
-          "schema": {
-            "$ref": "#/definitions/FeatureFlagEvent"
+            "description": "Error"
           }
         }
       }
     },
     "/projects/{id}/access_token_hooks": {
+      "x-ms-notification-content": {
+        "description": "When a project access token is expiring payload.",
+        "schema": {
+          "$ref": "#/definitions/AccessTokenEvent"
+        }
+      },
       "post": {
         "operationId": "OnAccessTokenEvent",
         "summary": "When a project access token is expiring",
@@ -1518,7 +1481,10 @@
             "schema": {
               "type": "object",
               "required": [
-                "notificationUrl"
+                "notificationUrl",
+                "resource_access_token_events",
+                "push_events",
+                "enable_ssl_verification"
               ],
               "properties": {
                 "notificationUrl": {
@@ -1563,16 +1529,7 @@
             }
           },
           "default": {
-            "description": "Error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        },
-        "x-ms-notification-content": {
-          "description": "When a project access token is expiring payload.",
-          "schema": {
-            "$ref": "#/definitions/AccessTokenEvent"
+            "description": "Error"
           }
         }
       }
@@ -1594,7 +1551,8 @@
       "required": true,
       "type": "integer",
       "description": "The internal ID (IID) of the issue within the project.",
-      "x-ms-summary": "Issue IID"
+      "x-ms-summary": "Issue IID",
+      "x-ms-url-encoding": "single"
     },
     "HookId": {
       "name": "hook_id",
@@ -1602,7 +1560,8 @@
       "required": true,
       "type": "integer",
       "description": "The ID of the project webhook.",
-      "x-ms-summary": "Hook ID"
+      "x-ms-summary": "Hook ID",
+      "x-ms-url-encoding": "single"
     },
     "PerPage": {
       "name": "per_page",
@@ -2298,26 +2257,6 @@
         }
       }
     },
-    "Error": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string",
-          "description": "Error message.",
-          "x-ms-summary": "Message"
-        },
-        "error": {
-          "type": "string",
-          "description": "Error identifier.",
-          "x-ms-summary": "Error"
-        },
-        "error_description": {
-          "type": "string",
-          "description": "Detailed error description.",
-          "x-ms-summary": "Error description"
-        }
-      }
-    },
     "EventProject": {
       "type": "object",
       "description": "The project the event belongs to.",
@@ -2957,6 +2896,20 @@
   "tags": [
     {
       "name": "GitLab"
+    }
+  ],
+  "x-ms-connector-metadata": [
+    {
+      "propertyName": "Website",
+      "propertyValue": "https://gitlab.com"
+    },
+    {
+      "propertyName": "Privacy policy",
+      "propertyValue": "https://about.gitlab.com/privacy/"
+    },
+    {
+      "propertyName": "Categories",
+      "propertyValue": "IT Operations;Productivity"
     }
   ]
 }
