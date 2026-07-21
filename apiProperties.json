@@ -5,7 +5,7 @@
         "type": "oauthSetting",
         "oAuthSettings": {
           "identityProvider": "oauth2generic",
-          "clientId": "<<Enter your GitLab application (client) ID>>",
+          "clientId": "cb0d2dc33a6e4527a2a30462dd38f44c6b5279a5566258f0fe580d2063c15eeb",
           "scopes": [
             "api"
           ],
