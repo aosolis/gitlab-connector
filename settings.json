@@ -1,6 +1,6 @@
 {
-  "connectorId": "shared_gitlab-5f566ef14ae1d0129f-5f99550ae66181ff82",
-  "environment": "Default-02d545af-a525-44a3-9147-63df08f7cd25",
+  "connectorId": "",
+  "environment": "",
   "apiProperties": "apiProperties.json",
   "apiDefinition": "apiDefinition.swagger.json",
   "icon": "icon.png",
