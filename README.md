@@ -115,13 +115,16 @@ paconn create --api-def apiDefinition.swagger.json --api-prop apiProperties.json
 
 When creating a connection you will be asked for:
 
-- **GitLab host** — e.g. `gitlab.com` or `gitlab.mycompany.com` (no `https://`). The `dynamichosturl` policy routes all API calls to this host.
 - **OAuth sign-in** — you'll be redirected to GitLab to authorize the application.
+
+The API host is fixed to `gitlab.com` in `apiProperties.json` (the `dynamichosturl` policy), so there is no host prompt at connection time.
 
 ## Self-managed GitLab notes
 
-- The **GitLab host** connection parameter already lets API calls target any instance.
-- Power Platform requires **static** OAuth authorization/token URLs, so they default to `gitlab.com`. For a self-managed instance, edit the three URL values in `apiProperties.json` (`authorizationUrlTemplate`, `tokenUrlTemplate`, `refreshUrlTemplate`) — or the Security tab after import — to point at your host, e.g. `https://gitlab.mycompany.com/oauth/authorize`. The OAuth host should match the host your tokens are issued from.
+- Point the connector at a self-managed instance by editing `apiProperties.json` (then re-deploy with `paconn update`):
+  - the `dynamichosturl` template host (`https://gitlab.com/api/v4` → `https://gitlab.mycompany.com/api/v4`), and
+  - the three OAuth URLs (`authorizationUrlTemplate`, `tokenUrlTemplate`, `refreshUrlTemplate`) — Power Platform requires **static** OAuth URLs, and the OAuth host must match the host your tokens are issued from.
+- One connector deployment therefore targets one host. (A per-connection host parameter only adds value with Personal Access Token auth, which this connector doesn't use.)
 
 ## References
 

@@ -7,7 +7,7 @@ the symptom, the root cause, and the fix — so future changes don't reintroduce
 ## Contents
 
 - [OAuth 2.0 (generic provider)](#oauth-20-generic-provider)
-- [Configurable host & the dynamic-host policy](#configurable-host--the-dynamic-host-policy)
+- [Fixed host & the dynamic-host policy](#fixed-host--the-dynamic-host-policy)
 - [Webhook triggers on a single backend endpoint](#webhook-triggers-on-a-single-backend-endpoint)
 - [The callback URL property (`notificationUrl`)](#the-callback-url-property-notificationurl)
 - [Custom code (`script.csx`) — what policies can't do](#custom-code-scriptcsx--what-policies-cant-do)
@@ -56,7 +56,7 @@ to point at that host.
 
 ---
 
-## Configurable host & the dynamic-host policy
+## Fixed host & the dynamic-host policy
 
 **Fold the API base path into the host template.** The `dynamichosturl` policy
 replaces the host **and drops the swagger `basePath`**. So `/api/v4` must live in
@@ -65,7 +65,7 @@ the template, not in `basePath`:
 ```json
 { "templateId": "dynamichosturl",
   "parameters": { "x-ms-apimTemplateParameter.urlTemplate":
-    "https://@connectionParameters('gitlabHost')/api/v4" } }
+    "https://gitlab.com/api/v4" } }
 ```
 
 with `basePath: "/"` in the swagger.
@@ -75,8 +75,13 @@ with `basePath: "/"` in the swagger.
   an HTML page, and the flow failed with:
   `The API operation 'GetCurrentUser' requires the property 'body' to be of type
   'Object' but is of type 'String'.`
-- The `gitlabHost` connection parameter is entered without scheme, e.g.
-  `gitlab.com` or `gitlab.mycompany.com`.
+- **Why the host is hardcoded, not a connection parameter.** Under OAuth the
+  authorization/token URLs are static (design-time) and the API host must match
+  the token issuer — so a per-connection host adds no flexibility: changing hosts
+  already requires editing `apiProperties.json` (the OAuth URLs) and redeploying.
+  For a self-managed instance, edit the `dynamichosturl` host and the three OAuth
+  URLs together. A per-connection host parameter only pays off with PAT auth
+  (no static OAuth URLs), which this connector doesn't use.
 
 ---
 

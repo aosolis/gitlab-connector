@@ -75,9 +75,10 @@ Open `apiProperties.json` and set the `clientId` to your GitLab **Application ID
 The **client secret** is *not* stored in the file — you pass it on the command
 line when creating/updating the connector.
 
-> Self-managed GitLab only: also change the three OAuth URLs in
-> `apiProperties.json` (`authorizationUrlTemplate`, `tokenUrlTemplate`,
-> `refreshUrlTemplate`) from `https://gitlab.com/...` to your instance host.
+> Self-managed GitLab only: also change the host in `apiProperties.json` — both
+> the `dynamichosturl` template (`https://gitlab.com/api/v4` → your host) and the
+> three OAuth URLs (`authorizationUrlTemplate`, `tokenUrlTemplate`,
+> `refreshUrlTemplate`) — from `https://gitlab.com/...` to your instance host.
 
 ---
 
@@ -143,10 +144,9 @@ from the placeholder you registered in step 1.
 ## 7. Create a connection
 
 1. On the connector, go to the **Test** tab (or **Connections**) → **+ New connection**.
-2. Enter the **GitLab host** without a scheme, e.g. `gitlab.com` (or your
-   self-managed host such as `gitlab.mycompany.com`).
-3. You'll be redirected to GitLab → **Authorize** the application.
-4. On success the connection is created and ready to use.
+2. You'll be redirected to GitLab → **Authorize** the application. (There is no
+   host prompt — the API host is fixed to `gitlab.com` in `apiProperties.json`.)
+3. On success the connection is created and ready to use.
 
 Quick check: on the **Test** tab, run **Get current user** — a `200` response
 with your GitLab profile confirms OAuth and host routing both work.

@@ -28,17 +28,6 @@
             }
           }
         }
-      },
-      "gitlabHost": {
-        "type": "string",
-        "uiDefinition": {
-          "displayName": "GitLab host",
-          "description": "GitLab host name without scheme, for example gitlab.com or gitlab.mycompany.com.",
-          "tooltip": "Enter the GitLab host, e.g. gitlab.com",
-          "constraints": {
-            "required": "true"
-          }
-        }
       }
     },
     "iconBrandColor": "#FC6D26",
@@ -65,7 +54,7 @@
         "templateId": "dynamichosturl",
         "title": "Route requests to the GitLab host",
         "parameters": {
-          "x-ms-apimTemplateParameter.urlTemplate": "https://@connectionParameters('gitlabHost')/api/v4"
+          "x-ms-apimTemplateParameter.urlTemplate": "https://gitlab.com/api/v4"
         }
       },
       {
