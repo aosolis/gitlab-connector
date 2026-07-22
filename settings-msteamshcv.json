@@ -1,0 +1,10 @@
+{
+  "connectorId": "shared_gitlab-5fc350324e0ae32265-5ffccfd5c8e785fc31",
+  "environment": "b7420770-088b-e507-80db-6b1f8fbb5e09",
+  "apiProperties": "apiProperties.json",
+  "apiDefinition": "apiDefinition.swagger.json",
+  "icon": "icon.png",
+  "script": "script.csx",
+  "powerAppsUrl": "https://api.powerapps.com",
+  "powerAppsApiVersion": "2016-11-01"
+}
