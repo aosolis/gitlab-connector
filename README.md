@@ -11,6 +11,7 @@ Authentication is **OAuth 2.0** (authorization code flow) against a GitLab appli
 | Operation | Method | Path |
 | --- | --- | --- |
 | Get current user | GET | `/user` |
+| Get version | GET | `/version` |
 | List projects | GET | `/projects` |
 | Get project | GET | `/projects/{id}` |
 | List issues | GET | `/projects/{id}/issues` |

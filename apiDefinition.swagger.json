@@ -39,6 +39,24 @@
         }
       }
     },
+    "/version": {
+      "get": {
+        "operationId": "GetVersion",
+        "summary": "Get version",
+        "description": "Retrieves the version and revision of the GitLab instance. Useful as a lightweight connection health check.",
+        "responses": {
+          "200": {
+            "description": "The GitLab instance version.",
+            "schema": {
+              "$ref": "#/definitions/Version"
+            }
+          },
+          "default": {
+            "description": "Error"
+          }
+        }
+      }
+    },
     "/projects": {
       "get": {
         "operationId": "ListProjects",
@@ -1831,6 +1849,21 @@
     }
   },
   "definitions": {
+    "Version": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "GitLab instance version.",
+          "x-ms-summary": "Version"
+        },
+        "revision": {
+          "type": "string",
+          "description": "GitLab instance revision.",
+          "x-ms-summary": "Revision"
+        }
+      }
+    },
     "User": {
       "type": "object",
       "properties": {
