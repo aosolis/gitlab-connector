@@ -20,8 +20,15 @@ Authentication is **OAuth 2.0** (authorization code flow) against a GitLab appli
 | Add comment to issue | POST | `/projects/{id}/issues/{issue_iid}/notes` |
 | List merge requests | GET | `/projects/{id}/merge_requests` |
 | Create merge request | POST | `/projects/{id}/merge_requests` |
+| Update merge request | PUT | `/projects/{id}/merge_requests/{merge_request_iid}` |
+| Merge merge request | PUT | `/projects/{id}/merge_requests/{merge_request_iid}/merge` |
 | List pipelines | GET | `/projects/{id}/pipelines` |
 | Trigger pipeline | POST | `/projects/{id}/pipeline` |
+| Create project | POST | `/projects` |
+| Fork project | POST | `/projects/{id}/fork` |
+| Create branch | POST | `/projects/{id}/repository/branches` |
+| Create commit | POST | `/projects/{id}/repository/commits` |
+| Get file | GET | `/projects/{id}/repository/files/{file_path}` |
 | List project hooks | GET | `/projects/{id}/hooks` |
 | Delete project hook | DELETE | `/projects/{id}/hooks/{hook_id}` |
 

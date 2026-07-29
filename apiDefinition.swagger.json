@@ -100,6 +100,32 @@
             "description": "Error"
           }
         }
+      },
+      "post": {
+        "operationId": "CreateProject",
+        "summary": "Create project",
+        "description": "Creates a new GitLab project.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateProjectRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The created project.",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          },
+          "default": {
+            "description": "Error"
+          }
+        }
       }
     },
     "/projects/{id}": {
@@ -469,6 +495,209 @@
             "description": "The triggered pipeline.",
             "schema": {
               "$ref": "#/definitions/Pipeline"
+            }
+          },
+          "default": {
+            "description": "Error"
+          }
+        }
+      }
+    },
+    "/projects/{id}/fork": {
+      "post": {
+        "operationId": "ForkProject",
+        "summary": "Fork project",
+        "description": "Forks a project into the current user's namespace or a chosen namespace.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ForkProjectRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The forked project.",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          },
+          "default": {
+            "description": "Error"
+          }
+        }
+      }
+    },
+    "/projects/{id}/merge_requests/{merge_request_iid}": {
+      "put": {
+        "operationId": "UpdateMergeRequest",
+        "summary": "Update merge request",
+        "description": "Updates an existing merge request (for example, retitle, retarget, close, or reopen).",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "$ref": "#/parameters/MergeRequestIid"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateMergeRequestRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The updated merge request.",
+            "schema": {
+              "$ref": "#/definitions/MergeRequest"
+            }
+          },
+          "default": {
+            "description": "Error"
+          }
+        }
+      }
+    },
+    "/projects/{id}/merge_requests/{merge_request_iid}/merge": {
+      "put": {
+        "operationId": "MergeMergeRequest",
+        "summary": "Merge merge request",
+        "description": "Accepts and merges a merge request.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "$ref": "#/parameters/MergeRequestIid"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MergeMergeRequestRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The merged merge request.",
+            "schema": {
+              "$ref": "#/definitions/MergeRequest"
+            }
+          },
+          "default": {
+            "description": "Error"
+          }
+        }
+      }
+    },
+    "/projects/{id}/repository/branches": {
+      "post": {
+        "operationId": "CreateBranch",
+        "summary": "Create branch",
+        "description": "Creates a new branch in the repository.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "branch",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "Name of the new branch.",
+            "x-ms-summary": "Branch name"
+          },
+          {
+            "name": "ref",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "Branch name or commit SHA to create the branch from.",
+            "x-ms-summary": "Ref (branch or SHA)"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The created branch.",
+            "schema": {
+              "$ref": "#/definitions/Branch"
+            }
+          },
+          "default": {
+            "description": "Error"
+          }
+        }
+      }
+    },
+    "/projects/{id}/repository/commits": {
+      "post": {
+        "operationId": "CreateCommit",
+        "summary": "Create commit",
+        "description": "Creates a commit with one or more file actions (create, update, delete, move).",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateCommitRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The created commit.",
+            "schema": {
+              "$ref": "#/definitions/Commit"
+            }
+          },
+          "default": {
+            "description": "Error"
+          }
+        }
+      }
+    },
+    "/projects/{id}/repository/files/{file_path}": {
+      "get": {
+        "operationId": "GetFile",
+        "summary": "Get file",
+        "description": "Gets a file from the repository, including its Base64 content.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ProjectId"
+          },
+          {
+            "$ref": "#/parameters/FilePath"
+          },
+          {
+            "name": "ref",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "Name of a branch, tag, or commit. Use HEAD for the default branch.",
+            "x-ms-summary": "Ref (branch, tag, or commit)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The file.",
+            "schema": {
+              "$ref": "#/definitions/FileContent"
             }
           },
           "default": {
@@ -1581,6 +1810,24 @@
       "default": 1,
       "description": "Page number of results to return.",
       "x-ms-summary": "Page"
+    },
+    "MergeRequestIid": {
+      "name": "merge_request_iid",
+      "in": "path",
+      "required": true,
+      "type": "integer",
+      "description": "The internal ID (IID) of the merge request within the project.",
+      "x-ms-summary": "Merge request IID",
+      "x-ms-url-encoding": "single"
+    },
+    "FilePath": {
+      "name": "file_path",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "URL-encoded full path to the file, e.g. lib/class.rb.",
+      "x-ms-summary": "File path",
+      "x-ms-url-encoding": "single"
     }
   },
   "definitions": {
@@ -2871,6 +3118,382 @@
               "x-ms-summary": "Expires at"
             }
           }
+        }
+      }
+    },
+    "Branch": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "x-ms-summary": "Name"
+        },
+        "merged": {
+          "type": "boolean",
+          "x-ms-summary": "Merged"
+        },
+        "protected": {
+          "type": "boolean",
+          "x-ms-summary": "Protected"
+        },
+        "default": {
+          "type": "boolean",
+          "x-ms-summary": "Default branch"
+        },
+        "web_url": {
+          "type": "string",
+          "x-ms-summary": "Web URL"
+        },
+        "commit": {
+          "type": "object",
+          "description": "Most recent commit on the branch.",
+          "properties": {
+            "id": {
+              "type": "string",
+              "x-ms-summary": "Commit SHA"
+            },
+            "short_id": {
+              "type": "string",
+              "x-ms-summary": "Short SHA"
+            },
+            "title": {
+              "type": "string",
+              "x-ms-summary": "Title"
+            },
+            "message": {
+              "type": "string",
+              "x-ms-summary": "Message"
+            },
+            "author_name": {
+              "type": "string",
+              "x-ms-summary": "Author name"
+            },
+            "created_at": {
+              "type": "string",
+              "x-ms-summary": "Created at"
+            },
+            "web_url": {
+              "type": "string",
+              "x-ms-summary": "Commit URL"
+            }
+          }
+        }
+      }
+    },
+    "Commit": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "x-ms-summary": "Commit SHA"
+        },
+        "short_id": {
+          "type": "string",
+          "x-ms-summary": "Short SHA"
+        },
+        "title": {
+          "type": "string",
+          "x-ms-summary": "Title"
+        },
+        "message": {
+          "type": "string",
+          "x-ms-summary": "Message"
+        },
+        "author_name": {
+          "type": "string",
+          "x-ms-summary": "Author name"
+        },
+        "author_email": {
+          "type": "string",
+          "x-ms-summary": "Author email"
+        },
+        "authored_date": {
+          "type": "string",
+          "x-ms-summary": "Authored date"
+        },
+        "committer_name": {
+          "type": "string",
+          "x-ms-summary": "Committer name"
+        },
+        "committed_date": {
+          "type": "string",
+          "x-ms-summary": "Committed date"
+        },
+        "parent_ids": {
+          "type": "array",
+          "description": "Parent commit SHAs.",
+          "x-ms-summary": "Parent IDs",
+          "items": {
+            "type": "string"
+          }
+        },
+        "web_url": {
+          "type": "string",
+          "x-ms-summary": "Commit URL"
+        }
+      }
+    },
+    "FileContent": {
+      "type": "object",
+      "properties": {
+        "file_name": {
+          "type": "string",
+          "x-ms-summary": "File name"
+        },
+        "file_path": {
+          "type": "string",
+          "x-ms-summary": "File path"
+        },
+        "size": {
+          "type": "integer",
+          "x-ms-summary": "Size (bytes)"
+        },
+        "encoding": {
+          "type": "string",
+          "x-ms-summary": "Encoding"
+        },
+        "content": {
+          "type": "string",
+          "description": "File content, Base64 encoded.",
+          "x-ms-summary": "Content"
+        },
+        "content_sha256": {
+          "type": "string",
+          "x-ms-summary": "Content SHA256"
+        },
+        "ref": {
+          "type": "string",
+          "x-ms-summary": "Ref"
+        },
+        "blob_id": {
+          "type": "string",
+          "x-ms-summary": "Blob ID"
+        },
+        "commit_id": {
+          "type": "string",
+          "x-ms-summary": "Commit ID"
+        },
+        "last_commit_id": {
+          "type": "string",
+          "x-ms-summary": "Last commit ID"
+        }
+      }
+    },
+    "CreateProjectRequest": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the new project.",
+          "x-ms-summary": "Name"
+        },
+        "path": {
+          "type": "string",
+          "description": "Custom repository path for the project.",
+          "x-ms-summary": "Path"
+        },
+        "namespace_id": {
+          "type": "integer",
+          "description": "Namespace (group) ID for the new project; defaults to the current user.",
+          "x-ms-summary": "Namespace ID"
+        },
+        "description": {
+          "type": "string",
+          "x-ms-summary": "Description"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "private",
+            "internal",
+            "public"
+          ],
+          "description": "Project visibility.",
+          "x-ms-summary": "Visibility"
+        },
+        "initialize_with_readme": {
+          "type": "boolean",
+          "description": "Create a README so the repository has a default branch.",
+          "x-ms-summary": "Initialize with README"
+        },
+        "default_branch": {
+          "type": "string",
+          "x-ms-summary": "Default branch"
+        }
+      }
+    },
+    "ForkProjectRequest": {
+      "type": "object",
+      "properties": {
+        "namespace_id": {
+          "type": "integer",
+          "description": "ID of the namespace to fork into.",
+          "x-ms-summary": "Target namespace ID"
+        },
+        "namespace_path": {
+          "type": "string",
+          "description": "Path of the namespace to fork into.",
+          "x-ms-summary": "Target namespace path"
+        },
+        "path": {
+          "type": "string",
+          "description": "Path of the forked project.",
+          "x-ms-summary": "Path"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the forked project.",
+          "x-ms-summary": "Name"
+        }
+      }
+    },
+    "UpdateMergeRequestRequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "x-ms-summary": "Title"
+        },
+        "description": {
+          "type": "string",
+          "x-ms-summary": "Description"
+        },
+        "target_branch": {
+          "type": "string",
+          "x-ms-summary": "Target branch"
+        },
+        "state_event": {
+          "type": "string",
+          "enum": [
+            "close",
+            "reopen"
+          ],
+          "description": "State transition to apply.",
+          "x-ms-summary": "State event"
+        },
+        "labels": {
+          "type": "string",
+          "description": "Comma-separated list of label names (replaces existing).",
+          "x-ms-summary": "Labels"
+        },
+        "remove_source_branch": {
+          "type": "boolean",
+          "x-ms-summary": "Remove source branch"
+        }
+      }
+    },
+    "MergeMergeRequestRequest": {
+      "type": "object",
+      "properties": {
+        "merge_commit_message": {
+          "type": "string",
+          "x-ms-summary": "Merge commit message"
+        },
+        "squash": {
+          "type": "boolean",
+          "description": "Squash commits into a single commit on merge.",
+          "x-ms-summary": "Squash"
+        },
+        "squash_commit_message": {
+          "type": "string",
+          "x-ms-summary": "Squash commit message"
+        },
+        "should_remove_source_branch": {
+          "type": "boolean",
+          "description": "Remove the source branch after merging.",
+          "x-ms-summary": "Remove source branch"
+        },
+        "merge_when_pipeline_succeeds": {
+          "type": "boolean",
+          "x-ms-summary": "Merge when pipeline succeeds"
+        }
+      }
+    },
+    "CommitAction": {
+      "type": "object",
+      "required": [
+        "action",
+        "file_path"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "create",
+            "delete",
+            "move",
+            "update",
+            "chmod"
+          ],
+          "description": "The action to perform on the file.",
+          "x-ms-summary": "Action"
+        },
+        "file_path": {
+          "type": "string",
+          "description": "Full path to the file.",
+          "x-ms-summary": "File path"
+        },
+        "previous_path": {
+          "type": "string",
+          "description": "Original path when moving a file.",
+          "x-ms-summary": "Previous path"
+        },
+        "content": {
+          "type": "string",
+          "description": "File content, required for create and update.",
+          "x-ms-summary": "Content"
+        },
+        "encoding": {
+          "type": "string",
+          "enum": [
+            "text",
+            "base64"
+          ],
+          "description": "Encoding of the content (text or base64).",
+          "x-ms-summary": "Encoding"
+        }
+      }
+    },
+    "CreateCommitRequest": {
+      "type": "object",
+      "required": [
+        "branch",
+        "commit_message",
+        "actions"
+      ],
+      "properties": {
+        "branch": {
+          "type": "string",
+          "description": "Name of the branch to commit into.",
+          "x-ms-summary": "Branch"
+        },
+        "commit_message": {
+          "type": "string",
+          "x-ms-summary": "Commit message"
+        },
+        "start_branch": {
+          "type": "string",
+          "description": "Name of the branch to start the new branch from, when creating one.",
+          "x-ms-summary": "Start branch"
+        },
+        "actions": {
+          "type": "array",
+          "description": "The file actions to include in the commit.",
+          "x-ms-summary": "Actions",
+          "items": {
+            "$ref": "#/definitions/CommitAction"
+          }
+        },
+        "author_name": {
+          "type": "string",
+          "x-ms-summary": "Author name"
+        },
+        "author_email": {
+          "type": "string",
+          "x-ms-summary": "Author email"
         }
       }
     }
